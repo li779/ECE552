@@ -1,0 +1,170 @@
+# Compile of xor3.v was successful.
+# Compile of alu.v was successful.
+# Compile of arith_Op.v was successful.
+# Compile of carry.v was successful.
+# Compile of cla_4b.v was successful.
+# Compile of cla_16b.v was successful.
+# Compile of clkrst.v was successful.
+# Compile of decode.v was successful.
+# Compile of dff.v was successful.
+# Compile of execute.v was successful.
+# Compile of fetch.v was successful.
+# Compile of fullAdder_1b.v was successful.
+# Compile of memory.v was successful.
+# Compile of memory2c.syn.v was successful.
+# Compile of memory2c.v was successful.
+# Compile of nand2.v was successful.
+# Compile of nand3.v was successful.
+# Compile of nor2.v was successful.
+# Compile of nor3.v was successful.
+# Compile of not1.v was successful.
+# Compile of proc.v was successful.
+# Compile of proc_hier.v was successful.
+# Compile of proc_hier_bench.v was successful.
+# Compile of regFile.v was successful.
+# Compile of regFile_bypass.v was successful.
+# Compile of shift_layer.v was successful.
+# Compile of shifter.v was successful.
+# Compile of single_reg.v was successful.
+# Compile of wb.v was successful.
+# Compile of xor2.v was successful.
+# 30 compiles, 0 failed with no errors.
+# Compile of xor3.v was successful.
+# Compile of alu.v was successful.
+# Compile of arith_Op.v was successful.
+# Compile of carry.v was successful.
+# Compile of cla_4b.v was successful.
+# Compile of cla_16b.v was successful.
+# Compile of clkrst.v was successful.
+# Compile of decode.v was successful.
+# Compile of dff.v was successful.
+# Compile of execute.v was successful.
+# Compile of fetch.v failed with 7 errors.
+# Compile of fullAdder_1b.v was successful.
+# Compile of memory.v failed with 1 errors.
+# Compile of memory2c.syn.v was successful.
+# Compile of memory2c.v was successful.
+# Compile of nand2.v was successful.
+# Compile of nand3.v was successful.
+# Compile of nor2.v was successful.
+# Compile of nor3.v was successful.
+# Compile of not1.v was successful.
+# Compile of proc.v was successful.
+# Compile of proc_hier.v was successful.
+# Compile of proc_hier_bench.v was successful.
+# Compile of regFile.v was successful.
+# Compile of regFile_bypass.v was successful.
+# Compile of shift_layer.v was successful.
+# Compile of shifter.v was successful.
+# Compile of single_reg.v was successful.
+# Compile of wb.v was successful.
+# Compile of xor2.v was successful.
+# 30 compiles, 2 failed with 8 errors.
+# Compile of memory.v was successful.
+# Compile of fetch.v failed with 2 errors.
+# Compile of fetch.v was successful.
+# Compile of xor3.v was successful.
+# Compile of alu.v was successful.
+# Compile of arith_Op.v was successful.
+# Compile of carry.v was successful.
+# Compile of cla_4b.v was successful.
+# Compile of cla_16b.v was successful.
+# Compile of clkrst.v was successful.
+# Compile of decode.v failed with 4 errors.
+# Compile of dff.v was successful.
+# Compile of execute.v failed with 4 errors.
+# Compile of fetch.v was successful.
+# Compile of fullAdder_1b.v was successful.
+# Compile of memory.v was successful.
+# Compile of memory2c.syn.v was successful.
+# Compile of memory2c.v was successful.
+# Compile of nand2.v was successful.
+# Compile of nand3.v was successful.
+# Compile of nor2.v was successful.
+# Compile of nor3.v was successful.
+# Compile of not1.v was successful.
+# Compile of proc.v was successful.
+# Compile of proc_hier.v was successful.
+# Compile of proc_hier_bench.v was successful.
+# Compile of regFile.v was successful.
+# Compile of regFile_bypass.v was successful.
+# Compile of shift_layer.v was successful.
+# Compile of shifter.v was successful.
+# Compile of single_reg.v was successful.
+# Compile of wb.v was successful.
+# Compile of xor2.v was successful.
+# Compile of immediate.v failed with 1 errors.
+# Compile of decode_instr.v failed with 6 errors.
+# 32 compiles, 4 failed with 15 errors.
+# Compile of immediate.v failed with 3 errors.
+# Compile of immediate.v failed with 3 errors.
+# Compile of immediate.v failed with 3 errors.
+# Compile of immediate.v was successful with warnings.
+# Compile of immediate.v was successful.
+# Compile of xor3.v was successful.
+# Compile of alu.v was successful.
+# Compile of arith_Op.v was successful.
+# Compile of carry.v was successful.
+# Compile of cla_4b.v was successful.
+# Compile of cla_16b.v was successful.
+# Compile of clkrst.v was successful.
+# Compile of decode.v failed with 3 errors.
+# Compile of dff.v was successful.
+# Compile of execute.v was successful with warnings.
+# Compile of fetch.v was successful.
+# Compile of fullAdder_1b.v was successful.
+# Compile of memory.v was successful.
+# Compile of memory2c.syn.v was successful.
+# Compile of memory2c.v was successful.
+# Compile of nand2.v was successful.
+# Compile of nand3.v was successful.
+# Compile of nor2.v was successful.
+# Compile of nor3.v was successful.
+# Compile of not1.v was successful.
+# Compile of proc.v was successful.
+# Compile of proc_hier.v was successful.
+# Compile of proc_hier_bench.v was successful.
+# Compile of regFile.v was successful.
+# Compile of regFile_bypass.v was successful.
+# Compile of shift_layer.v was successful.
+# Compile of shifter.v was successful.
+# Compile of single_reg.v was successful.
+# Compile of wb.v was successful.
+# Compile of xor2.v was successful.
+# Compile of immediate.v was successful.
+# Compile of decode_instr.v failed with 27 errors.
+# 32 compiles, 2 failed with 30 errors.
+# Compile of decode_instr.v failed with 1 errors.
+# Compile of xor3.v was successful.
+# Compile of alu.v was successful.
+# Compile of arith_Op.v was successful.
+# Compile of carry.v was successful.
+# Compile of cla_4b.v was successful.
+# Compile of cla_16b.v was successful.
+# Compile of clkrst.v was successful.
+# Compile of decode.v failed with 3 errors.
+# Compile of dff.v was successful.
+# Compile of execute.v was successful with warnings.
+# Compile of fetch.v was successful.
+# Compile of fullAdder_1b.v was successful.
+# Compile of memory.v was successful.
+# Compile of memory2c.syn.v was successful.
+# Compile of memory2c.v was successful.
+# Compile of nand2.v was successful.
+# Compile of nand3.v was successful.
+# Compile of nor2.v was successful.
+# Compile of nor3.v was successful.
+# Compile of not1.v was successful.
+# Compile of proc.v was successful.
+# Compile of proc_hier.v was successful.
+# Compile of proc_hier_bench.v was successful.
+# Compile of regFile.v was successful.
+# Compile of regFile_bypass.v was successful.
+# Compile of shift_layer.v was successful.
+# Compile of shifter.v was successful.
+# Compile of single_reg.v was successful.
+# Compile of wb.v was successful.
+# Compile of xor2.v was successful.
+# Compile of immediate.v was successful.
+# Compile of decode_instr.v was successful.
+# 32 compiles, 1 failed with 3 errors.
