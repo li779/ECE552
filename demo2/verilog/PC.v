@@ -8,7 +8,7 @@ module PC(pc, halt, newPC, Rs_data, Sign_imm, jump, branch, regRead, pc_2, branc
     wire pc_base, reg_base, Rs_zero, Rs_neg;
     //wire [15:0] pc_calc; // pc before final
     wire [15:0] pc_branch; // pc for branch
-    output [15:0] pc_2; // PC increment 2
+    input [15:0] pc_2; // PC increment 2
     //wire [15:0] pc_fin; // PC choice between original and increment 2
     wire [15:0] pc_imm; // PC + 2 + signedImm
     wire [15:0] pc_reg; // Rs + signedImm
@@ -17,7 +17,7 @@ module PC(pc, halt, newPC, Rs_data, Sign_imm, jump, branch, regRead, pc_2, branc
     assign pc_base = branch | (jump & ~regRead);
     assign reg_base = jump && regRead;
 
-    cla_16b inc_2(.A(pc), .B(16'h0002), .C_in(1'b0), .S(pc_2), .C_out());
+    
     //assign pc_fin = halt? pc:pc_2;
     //mux2_1 PC_inc(.InA(pc_2), .InB(pc), .S(halt), .Out(pc_fin));
     cla_16b add_imm(.A(pc_2), .B(Sign_imm), .C_in(1'b0), .S(pc_imm), .C_out());

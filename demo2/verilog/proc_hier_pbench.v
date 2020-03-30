@@ -22,10 +22,10 @@ module proc_hier_pbench();
    wire [15:0] MemAddress;
    wire [15:0] MemDataIn;
    wire [15:0] MemDataOut;
-   wire        DCacheHit;
-   wire        ICacheHit;
-   wire        DCacheReq;
-   wire        ICacheReq;
+   // wire        DCacheHit;
+   // wire        ICacheHit;
+   // wire        DCacheReq;
+   // wire        ICacheReq;
    
 
    wire        Halt;         /* Halt executed and in Memory or writeback stage */
@@ -34,10 +34,10 @@ module proc_hier_pbench();
    integer     trace_file;
    integer     sim_log_file;
      
-   integer     DCacheHit_count;
-   integer     ICacheHit_count;
-   integer     DCacheReq_count;
-   integer     ICacheReq_count;
+   // integer     DCacheHit_count;
+   // integer     ICacheHit_count;
+   // integer     DCacheReq_count;
+   // integer     ICacheReq_count;
    
    proc_hier DUT();
 
@@ -47,10 +47,10 @@ module proc_hier_pbench();
       $display("Hello world...simulation starting");
       $display("See verilogsim.log and verilogsim.ptrace for output");
       inst_count = 0;
-      DCacheHit_count = 0;
-      ICacheHit_count = 0;
-      DCacheReq_count = 0;
-      ICacheReq_count = 0;
+      // DCacheHit_count = 0;
+      // ICacheHit_count = 0;
+      // DCacheReq_count = 0;
+      // ICacheReq_count = 0;
 
       trace_file = $fopen("verilogsim.ptrace");
       sim_log_file = $fopen("verilogsim.log");
@@ -62,18 +62,18 @@ module proc_hier_pbench();
          if (Halt || RegWrite || MemWrite) begin
             inst_count = inst_count + 1;
          end
-         if (DCacheHit) begin
-            DCacheHit_count = DCacheHit_count + 1;      
-         end    
-         if (ICacheHit) begin
-            ICacheHit_count = ICacheHit_count + 1;      
-         end    
-         if (DCacheReq) begin
-            DCacheReq_count = DCacheReq_count + 1;      
-         end    
-         if (ICacheReq) begin
-            ICacheReq_count = ICacheReq_count + 1;      
-         end    
+         // if (DCacheHit) begin
+         //    DCacheHit_count = DCacheHit_count + 1;      
+         // end    
+         // if (ICacheHit) begin
+         //    ICacheHit_count = ICacheHit_count + 1;      
+         // end    
+         // if (DCacheReq) begin
+         //    DCacheReq_count = DCacheReq_count + 1;      
+         // end    
+         // if (ICacheReq) begin
+         //    ICacheReq_count = ICacheReq_count + 1;      
+         // end    
 
          $fdisplay(sim_log_file, "SIMLOG:: Cycle %d PC: %8x I: %8x R: %d %3d %8x M: %d %d %8x %8x",
                    DUT.c0.cycle_count,
@@ -104,10 +104,10 @@ module proc_hier_pbench();
             $fdisplay(sim_log_file, "SIMLOG:: Processor halted\n");
             $fdisplay(sim_log_file, "SIMLOG:: sim_cycles %d\n", DUT.c0.cycle_count);
             $fdisplay(sim_log_file, "SIMLOG:: inst_count %d\n", inst_count);
-            $fdisplay(sim_log_file, "SIMLOG:: dcachehit_count %d\n", DCacheHit_count);
-            $fdisplay(sim_log_file, "SIMLOG:: icachehit_count %d\n", ICacheHit_count);
-            $fdisplay(sim_log_file, "SIMLOG:: dcachereq_count %d\n", DCacheReq_count);
-            $fdisplay(sim_log_file, "SIMLOG:: icachereq_count %d\n", ICacheReq_count);
+            // $fdisplay(sim_log_file, "SIMLOG:: dcachehit_count %d\n", DCacheHit_count);
+            // $fdisplay(sim_log_file, "SIMLOG:: icachehit_count %d\n", ICacheHit_count);
+            // $fdisplay(sim_log_file, "SIMLOG:: dcachereq_count %d\n", DCacheReq_count);
+            // $fdisplay(sim_log_file, "SIMLOG:: icachereq_count %d\n", ICacheReq_count);
 
             $fclose(trace_file);
             $fclose(sim_log_file);
@@ -130,30 +130,36 @@ module proc_hier_pbench();
    //assign PC = DUT.PC_Out;
    //assign Inst = DUT.Instruction_f;
    
-   assign RegWrite = DUT.p0.regWrite;
+   assign RegWrite = DUT.p0.decode0.regFile0.writeEn;
+   //assign RegWrite = DUT.p0.decode0.Reg_write_wd;
    // Is register file being written to, one bit signal (1 means yes, 0 means no)
    //    
-   assign WriteRegister = DUT.p0.DstwithJmout;
+   assign WriteRegister = DUT.p0.decode0.regFile0.writeRegSel;
+   //assign WriteRegister = DUT.p0.decode0.Reg_d_sel;
    // The name of the register being written to. (3 bit signal)
    
-   assign WriteData = DUT.p0.wData;
+   assign WriteData = DUT.p0.decode0.regFile0.writeData;
+   //assign WriteData = DUT.p0.decode0.WriteData_d;
    // Data being written to the register. (16 bits)
    
-   assign MemRead =  (DUT.p0.memRxout & ~DUT.p0.notdonem);
+   //assign MemRead =  (DUT.p0.memRxout & ~DUT.p0.notdonem);
+   assign MemRead =  DUT.p0.memory0.memRead;
    // Is memory being read, one bit signal (1 means yes, 0 means no)
    
-   assign MemWrite = (DUT.p0.memWxout & ~DUT.p0.notdonem);
+   //assign MemWrite = (DUT.p0.memWxout & ~DUT.p0.notdonem);
+   assign MemWrite = DUT.p0.memory0.memWrite;
    // Is memory being written to (1 bit signal)
    
-   assign MemAddress = DUT.p0.data1out;
+   assign MemAddress = DUT.p0.memory0.result_mw;
    // Address to access memory with (for both reads and writes to memory, 16 bits)
    
-   assign MemDataIn = DUT.p0.data2out;
+   assign MemDataIn = DUT.p0.memory0.data;
    // Data to be written to memory for memory writes (16 bits)
    
-   assign MemDataOut = DUT.p0.readData;
+   assign MemDataOut = DUT.p0.memory0.data_out;
    // Data read from memory for memory reads (16 bits)
 
+   /*
    // new added 05/03
    assign ICacheReq = DUT.p0.readData;
    // Signal indicating a valid instruction read request to cache
@@ -170,12 +176,17 @@ module proc_hier_pbench();
    assign DCacheHit = DUT.p0.readData;
    // Signal indicating a valid data cache hit
    // Above assignment is a dummy example
+   */
    
-   assign Halt = DUT.p0.haltxout;
+   assign Halt = DUT.p0.memory0.halt;
    // Processor halted
    
    
    /* Add anything else you want here */
+   
+   assign wb_sel = DUT.p0.execute0.alu1.real_in2;
+   assign err = DUT.p0.err;
+   assign Rs_data = DUT.p0.execute0.alu1.real_in1;//ReadData_s;
 
    
 endmodule
