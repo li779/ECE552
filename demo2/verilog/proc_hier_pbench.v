@@ -75,7 +75,7 @@ module proc_hier_pbench();
          //    ICacheReq_count = ICacheReq_count + 1;      
          // end    
 
-         $fdisplay(sim_log_file, "SIMLOG:: Cycle %d PC: %8x I: %8x R: %d %3d %8x M: %d %d %8x %8x",
+         $fdisplay(sim_log_file, "SIMLOG:: Cycle %d PC: %8x I: %8x R: %d %3d %8x M: %d %d %8x %8x RW: %b %b %b Rd: %3x %3x %3x Rs: %3x Rt: %3x HAZ: %d st:%d",
                    DUT.c0.cycle_count,
                    PC,
                    Inst,
@@ -85,11 +85,21 @@ module proc_hier_pbench();
                    MemRead,
                    MemWrite,
                    MemAddress,
-                   MemDataIn);
+                   MemDataIn,
+                   haz_Reg_write_exe,
+                   haz_Reg_write_mem,
+                   haz_Reg_write_wb,
+                   haz_Rd_exe,
+                   haz_Rd_mem,
+                   haz_Rd_wb,
+                   haz_Rs,
+                   haz_Rt,
+                   haz_detect, st_sel 
+                  );
          if (RegWrite) begin
             $fdisplay(trace_file,"REG: %d VALUE: 0x%04x",
                       WriteRegister,
-                      WriteData );            
+                      WriteData);            
          end
          if (MemRead) begin
             $fdisplay(trace_file,"LOAD: ADDR: 0x%04x VALUE: 0x%04x",
@@ -127,8 +137,8 @@ module proc_hier_pbench();
    // Edit the example below. You must change the signal
    // names on the right hand side
     
-   //assign PC = DUT.PC_Out;
-   //assign Inst = DUT.Instruction_f;
+   assign PC = DUT.p0.pc;
+   assign Inst = DUT.p0.instr;
    
    assign RegWrite = DUT.p0.decode0.regFile0.writeEn;
    //assign RegWrite = DUT.p0.decode0.Reg_write_wd;
@@ -150,13 +160,13 @@ module proc_hier_pbench();
    assign MemWrite = DUT.p0.memory0.memWrite;
    // Is memory being written to (1 bit signal)
    
-   assign MemAddress = DUT.p0.memory0.result_mw;
+   assign MemAddress = DUT.p0.memory0.addr_pre;
    // Address to access memory with (for both reads and writes to memory, 16 bits)
    
-   assign MemDataIn = DUT.p0.memory0.data;
+   assign MemDataIn = DUT.p0.memory0.data_in;
    // Data to be written to memory for memory writes (16 bits)
    
-   assign MemDataOut = DUT.p0.memory0.data_out;
+   assign MemDataOut = DUT.p0.memory0.mem_data;
    // Data read from memory for memory reads (16 bits)
 
    /*
@@ -184,9 +194,16 @@ module proc_hier_pbench();
    
    /* Add anything else you want here */
    
-   assign wb_sel = DUT.p0.execute0.alu1.real_in2;
-   assign err = DUT.p0.err;
-   assign Rs_data = DUT.p0.execute0.alu1.real_in1;//ReadData_s;
+   assign haz_Reg_write_exe = DUT.p0.hazard0.Reg_wr_exe;
+   assign haz_Reg_write_mem = DUT.p0.hazard0.Reg_wr_mem;
+   assign haz_Reg_write_wb =  DUT.p0.hazard0.Reg_wr_wb;
+   assign haz_Rd_exe = DUT.p0.hazard0.Rd_exe;
+   assign haz_Rd_mem = DUT.p0.hazard0.Rd_mem;
+   assign haz_Rd_wb = DUT.p0.hazard0.Rd_wb;
+   assign haz_Rs = DUT.p0.hazard0.Rs;
+   assign haz_Rt = DUT.p0.hazard0.Rt;//ReadData_s;
+   assign haz_detect = DUT.p0.hazard0.Reg_haz;
+   assign st_sel = DUT.p0.decode0.decoder.St_sel;
 
    
 endmodule

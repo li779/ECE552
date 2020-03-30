@@ -4,18 +4,18 @@
    Filename        : decode.v
    Description     : This is the module for the overall decode stage of the processor.
 */
-module decode (clk, rst, instr, PC, newPC, conditions, pc_change, Reg_write_wd, jump, regRead, R_type, haz_stall,
-               ReadData_t, ReadData_s, WriteData_d, immed, pc_2, pc_2_pre, Reg_d_sel, exceptions, Rs, Reg2Sel);
+module decode (clk, rst, instr, PC, newPC, conditions_next, pc_change, Reg_write_wd, jump, regRead, R_type, haz_stall, branch_nottaken,
+               ReadData_t_next, ReadData_s_next, WriteData_d, immed_next, pc_2_next, pc_2_pre, Reg_d_sel, exceptions, Rs, Reg2Sel);
 
    // TODO: Your code here
    input [15:0] instr, PC, WriteData_d, pc_2_pre;
    input rst, clk;
    input [2:0] Reg_d_sel;
    input Reg_write_wd, haz_stall;
-   output [15:0] newPC, ReadData_s, ReadData_t, immed, pc_2;
-   output [18:0] conditions;
+   output [15:0] newPC, ReadData_s_next, ReadData_t_next, immed_next, pc_2_next;
+   output [18:0] conditions_next;
    output [2:0] Rs, Reg2Sel;
-   output pc_change, jump, regRead, R_type, exceptions;
+   output pc_change, jump, regRead, R_type, exceptions, branch_nottaken;
    /* conditions is a group of all conditions that output from decode stage and carry all the way through pipeline
       conditions map:
       0: MemOp_sel
@@ -43,6 +43,11 @@ module decode (clk, rst, instr, PC, newPC, conditions, pc_change, Reg_write_wd, 
    reg [2:0] wr_sel;
    wire[1:0] branch_cond;
    wire halt_in, rst_ed;
+   wire branch_taken;
+
+   // pipeline wires
+   wire [18:0] conditions;
+   wire [15:0] immed, ReadData_t, ReadData_s, pc_2;
 
    dff flops (.d(halt_in), .clk(clk), .rst(rst), .q(halt));
 
@@ -72,9 +77,10 @@ module decode (clk, rst, instr, PC, newPC, conditions, pc_change, Reg_write_wd, 
    endcase
    assign Reg2Sel = (MemOp_sel & ~(instr[12:11] == 2'b01)) ? Rd : Rt;
    assign pc_change = jump | branch;
+   assign branch_nottaken = (branch & branch_taken) | jump;
 
    PC pc(.pc(PC), .halt(halt), .newPC(newPC), .Rs_data(ReadData_s), 
-         .Sign_imm(immed), .jump(jump), .branch(branch), 
+         .Sign_imm(immed), .jump(jump), .branch(branch), .branch_taken(branch_taken),
          .regRead(regRead), .pc_2(pc_2_pre), .branch_cond(branch_cond));
    immediate sign_Extend(.instr(instr), .immed(immed));
    regFile regFile0(.read1Data(ReadData_s), .read2Data(ReadData_t), 
@@ -93,8 +99,15 @@ module decode (clk, rst, instr, PC, newPC, conditions, pc_change, Reg_write_wd, 
    dff rst_ff (.d(rst), .clk(clk), .rst(1'b0), .q(rst_ed));
 
    // pipeline registers
-   dff pc_in [15:0] (.d(PC), .clk(clk), .rst(rst), .q(PC_pip));
-   dff instruction [15:0] (.d(instr), .clk(clk), .rst(rst), .q(instr_pip));
-   dff pc_2_ff [15:0] (.d(pc_2_pre), .clk(clk), .rst(rst), .q(pc_2));
+   //dff pc_in [15:0] (.d(PC), .clk(clk), .rst(rst), .q(PC_pip));
+   //dff instruction [15:0] (.d(instr), .clk(clk), .rst(rst), .q(instr_pip));
+   //dff pc_2_ff [15:0] (.d(pc_2_pre), .clk(clk), .rst(rst), .q(pc_2));
+
+
+   dff conditions_ff [18:0] (.d(conditions), .clk(clk), .rst(rst), .q(conditions_next));
+   dff imme_ff [15:0] (.d(immed), .clk(clk), .rst(rst), .q(immed_next));
+   dff ReadData_t_ff [15:0] (.d(ReadData_t), .clk(clk), .rst(rst), .q(ReadData_t_next));
+   dff ReadData_s_ff [15:0] (.d(ReadData_s), .clk(clk), .rst(rst), .q(ReadData_s_next));
+   dff pc_2_ff [15:0] (.d(pc_2_pre), .clk(clk), .rst(rst), .q(pc_2_next));
 
 endmodule

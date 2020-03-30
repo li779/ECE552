@@ -1,8 +1,9 @@
-module PC(pc, halt, newPC, Rs_data, Sign_imm, jump, branch, regRead, pc_2, branch_cond);
+module PC(pc, halt, newPC, Rs_data, Sign_imm, jump, branch, regRead, pc_2, branch_cond, branch_taken);
     input [15:0] pc, Rs_data, Sign_imm;
     input halt; // 1 if halt (PC doesn't change)
     input [1:0] branch_cond;
     output [15:0] newPC;
+    output branch_taken;
     input jump, branch, regRead;
 
     wire pc_base, reg_base, Rs_zero, Rs_neg;
@@ -29,9 +30,9 @@ module PC(pc, halt, newPC, Rs_data, Sign_imm, jump, branch, regRead, pc_2, branc
     //                  .InD(16'h0000), .S({pc_base, reg_base}), .Out(newPC));
     // assign pc_calc = pc_base ? (reg_base? 16'h0000 : pc_imm)
     //                        :(reg_base? pc_reg : pc_fin);
-
-    assign pc_branch = (branch_cond==2'b00 & Rs_zero) | (branch_cond==2'b01 & ~Rs_zero) 
-                        | (branch_cond==2'b10 & Rs_neg) | (branch_cond==2'b11 & ~Rs_neg) ? pc_imm : pc_2;
+    assign branch_taken = (branch_cond==2'b00 & Rs_zero) | (branch_cond==2'b01 & ~Rs_zero) 
+                        | (branch_cond==2'b10 & Rs_neg) | (branch_cond==2'b11 & ~Rs_neg);
+    assign pc_branch = branch_taken ? pc_imm : pc_2;
     // assign newPC = branch ? pc_branch : pc_calc;
      assign Rs_zero = ~ (|Rs_data);
      assign Rs_neg = Rs_data[15];
