@@ -36,8 +36,8 @@ module clkrst (clk, rst, err);
     end
     always @(posedge clk) begin
        cycle_count = cycle_count + 1;
-       //if (cycle_count > 100000) begin //TODO
-       if (cycle_count > 100) begin
+       if (cycle_count > 100000) begin //TODO
+       //if (cycle_count > 100) begin
           $display("hmm....more than 100000 cycles of simulation...error?\n");
           $finish;
        end

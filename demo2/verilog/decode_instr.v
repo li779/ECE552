@@ -44,9 +44,9 @@ module decode_instr (instr, rst, Alu_ops, Result_sel, MemOp_sel, BTR_sel, SLBI_s
     assign Alu_sel = (instr[15:13] == 3'b010) | (instr[15:11] == 5'b11011) | MemOp_sel | (instr[15:13] == 3'b111);
 
     // store
-    assign MemOp_sel = (instr[15:11] == 5'b10000) | (instr[15:11] == 5'b10011) | Ld_sel;
+    assign MemOp_sel = (instr[15:11] == 5'b10000) | (instr[15:11] == 5'b10011) | (instr[15:11] == 5'b10001);
     assign St_sel = ((instr[15:11] == 5'b10000) | (instr[15:11] == 5'b10011)) & stop;
-    assign Ld_sel = (instr[15:11] == 5'b10001);
+    assign Ld_sel = (instr[15:11] == 5'b10001) & stop;
 
     // jump
     assign jump = (instr[15:13] == 3'b001);

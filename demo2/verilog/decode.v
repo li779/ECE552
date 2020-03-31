@@ -4,7 +4,7 @@
    Filename        : decode.v
    Description     : This is the module for the overall decode stage of the processor.
 */
-module decode (clk, rst, instr, PC, newPC, conditions_next, pc_change, Reg_write_wd, jump, regRead, R_type, haz_stall, branch_nottaken,
+module decode (clk, rst, instr, PC, newPC, conditions_next, pc_change, Reg_write_wd, jump, regRead, R_type, haz_stall, branch_taken,
                ReadData_t_next, ReadData_s_next, WriteData_d, immed_next, pc_2_next, pc_2_pre, Reg_d_sel, exceptions, Rs, Reg2Sel);
 
    // TODO: Your code here
@@ -15,7 +15,7 @@ module decode (clk, rst, instr, PC, newPC, conditions_next, pc_change, Reg_write
    output [15:0] newPC, ReadData_s_next, ReadData_t_next, immed_next, pc_2_next;
    output [18:0] conditions_next;
    output [2:0] Rs, Reg2Sel;
-   output pc_change, jump, regRead, R_type, exceptions, branch_nottaken;
+   output pc_change, jump, regRead, R_type, exceptions, branch_taken;
    /* conditions is a group of all conditions that output from decode stage and carry all the way through pipeline
       conditions map:
       0: MemOp_sel
@@ -43,7 +43,7 @@ module decode (clk, rst, instr, PC, newPC, conditions_next, pc_change, Reg_write
    reg [2:0] wr_sel;
    wire[1:0] branch_cond;
    wire halt_in, rst_ed;
-   wire branch_taken;
+   wire branch_take;
 
    // pipeline wires
    wire [18:0] conditions;
@@ -77,10 +77,10 @@ module decode (clk, rst, instr, PC, newPC, conditions_next, pc_change, Reg_write
    endcase
    assign Reg2Sel = (MemOp_sel & ~(instr[12:11] == 2'b01)) ? Rd : Rt;
    assign pc_change = jump | branch;
-   assign branch_nottaken = (branch & branch_taken) | jump;
+   assign branch_taken = (branch & branch_take) | jump;
 
    PC pc(.pc(PC), .halt(halt), .newPC(newPC), .Rs_data(ReadData_s), 
-         .Sign_imm(immed), .jump(jump), .branch(branch), .branch_taken(branch_taken),
+         .Sign_imm(immed), .jump(jump), .branch(branch), .branch_taken(branch_take),
          .regRead(regRead), .pc_2(pc_2_pre), .branch_cond(branch_cond));
    immediate sign_Extend(.instr(instr), .immed(immed));
    regFile regFile0(.read1Data(ReadData_s), .read2Data(ReadData_t), 

@@ -74,7 +74,7 @@ module proc (/*AUTOARG*/
    wire Reg_write_mw;  // reg_write enable memory -> wb
    // signals for harard unit
    wire haz_stall;
-   wire jump, regRead, R_type, exceptions, branch_nottaken;
+   wire jump, regRead, R_type, exceptions, branch_taken;
 
    wire [2:0] Reg_d_sel_wd;
    wire [2:0] Reg_d_sel_mw;
@@ -82,12 +82,12 @@ module proc (/*AUTOARG*/
 
    //assign haz_stall = 1'b0; //TODO
 
-   fetch fetch0(.pc(pc), .pc_next(pc_next), .clk(clk), .rst(rst), .instr(instr), .branch_nottaken(branch_nottaken),
+   fetch fetch0(.pc(pc), .pc_next(pc_next), .clk(clk), .rst(rst), .instr(instr), .branch_taken(branch_taken),
                 .halt(conditions_de[10]), .pc_2(pc_2_fd), .pc_change(pc_change), .haz_stall(haz_stall));
    decode decode0(.clk(clk), .rst(rst), .instr(instr), .PC(pc), .newPC(pc_next), .pc_change(pc_change), .Reg_d_sel(Reg_d_sel_wd),
                 .ReadData_t_next(ReadData_t_de), .ReadData_s_next(ReadData_s), .conditions_next(conditions_de), .Reg_write_wd(Reg_write_wd),
                 .WriteData_d(WriteData_d), .immed_next(imme_de), .pc_2_next(pc_2_de), .pc_2_pre(pc_2_fd), .jump(jump), .regRead(regRead), 
-                .R_type(R_type), .haz_stall(haz_stall), .exceptions(exceptions), .Rs(Rs), .Reg2Sel(Reg2Sel), .branch_nottaken(branch_nottaken));
+                .R_type(R_type), .haz_stall(haz_stall), .exceptions(exceptions), .Rs(Rs), .Reg2Sel(Reg2Sel), .branch_taken(branch_taken));
    execute execute0(.conditions(conditions_de), .clk(clk), .rst(rst), .pass_next(pass_em), .ReadData_s(ReadData_s), .ReadData_t(ReadData_t_de), 
                     .ReadData_t_em(ReadData_t_em), .imme(imme_de), .addr_em(result), .imme_next(imme_em), .pc_2(pc_2_de), .pc_2_next(pc_2_em));
    memory memory0(.pass(pass_em), .clk(clk), .rst(rst), .imme(imme_em), .imme_next(imme_mw), .addr_pre(result),

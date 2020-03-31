@@ -22,6 +22,8 @@ module proc_hier_pbench();
    wire [15:0] MemAddress;
    wire [15:0] MemDataIn;
    wire [15:0] MemDataOut;
+   wire [2:0] haz_Rd_exe, haz_Rd_mem ,haz_Rd_wb, haz_Rs, haz_Rt;//ReadData_s;
+   wire [15:0] pc_in;
    // wire        DCacheHit;
    // wire        ICacheHit;
    // wire        DCacheReq;
@@ -75,7 +77,7 @@ module proc_hier_pbench();
          //    ICacheReq_count = ICacheReq_count + 1;      
          // end    
 
-         $fdisplay(sim_log_file, "SIMLOG:: Cycle %d PC: %8x I: %8x R: %d %3d %8x M: %d %d %8x %8x RW: %b %b %b Rd: %3x %3x %3x Rs: %3x Rt: %3x HAZ: %d st:%d",
+         $fdisplay(sim_log_file, "SIMLOG:: Cycle %d PC: %8x I: %8x R: %d %3d %8x M: %d %d %8x %8x RW: %b %b %b Rd: %3d %3d %3d Rs: %3d Rt: %3d HAZ: %d in:%4x",
                    DUT.c0.cycle_count,
                    PC,
                    Inst,
@@ -94,7 +96,7 @@ module proc_hier_pbench();
                    haz_Rd_wb,
                    haz_Rs,
                    haz_Rt,
-                   haz_detect, st_sel 
+                   haz_detect, pc_in 
                   );
          if (RegWrite) begin
             $fdisplay(trace_file,"REG: %d VALUE: 0x%04x",
@@ -197,13 +199,14 @@ module proc_hier_pbench();
    assign haz_Reg_write_exe = DUT.p0.hazard0.Reg_wr_exe;
    assign haz_Reg_write_mem = DUT.p0.hazard0.Reg_wr_mem;
    assign haz_Reg_write_wb =  DUT.p0.hazard0.Reg_wr_wb;
-   assign haz_Rd_exe = DUT.p0.hazard0.Rd_exe;
-   assign haz_Rd_mem = DUT.p0.hazard0.Rd_mem;
-   assign haz_Rd_wb = DUT.p0.hazard0.Rd_wb;
+   assign haz_Rd_exe = DUT.p0.conditions_de[18:16];
+   assign haz_Rd_mem = DUT.p0.pass_em[8:6];
+   assign haz_Rd_wb = DUT.p0.Reg_d_sel_mw;
    assign haz_Rs = DUT.p0.hazard0.Rs;
    assign haz_Rt = DUT.p0.hazard0.Rt;//ReadData_s;
    assign haz_detect = DUT.p0.hazard0.Reg_haz;
    assign st_sel = DUT.p0.decode0.decoder.St_sel;
+   assign pc_in = DUT.p0.fetch0.newPc;
 
    
 endmodule
