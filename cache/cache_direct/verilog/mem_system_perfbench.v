@@ -93,9 +93,18 @@ module mem_system_perfbench(/*AUTOARG*/);
       fd = $fopen(addr_trace_file_name, "r");
    end
    
+   integer cycle;
+   initial begin
+      cycle = 0;
+   end
+   always@(posedge clk) begin
+      cycle = cycle + 1;
+      $display("Cycle num: %d, ourDone %b state: %d, nextstate: %d, hit: %d, wr: %d, rd: %d, valid: %d, miss: %d",
+               cycle, Done, DUT.m0.cc.state, DUT.m0.cc.next_state, 
+               DUT.m0.cc.hit, Wr, Rd, DUT.m0.cc.valid, DUT.m0.cc.miss_set);
+   end
    
-
-
+   // outOffset: %d, offsetRegIn %d, counterOut %d, memDataOut: 0x%h, cacheDataOut: 0x%h
    
    
    always @ (posedge clk) begin
