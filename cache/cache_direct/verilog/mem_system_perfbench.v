@@ -97,12 +97,9 @@ module mem_system_perfbench(/*AUTOARG*/);
    initial begin
       cycle = 0;
    end
-   always@(posedge clk) begin
-      cycle = cycle + 1;
-      $display("Cycle num: %d, ourDone %b state: %d, nextstate: %d, hit: %d, wr: %d, rd: %d, valid: %d, miss: %d",
-               cycle, Done, DUT.m0.cc.state, DUT.m0.cc.next_state, 
-               DUT.m0.cc.hit, Wr, Rd, DUT.m0.cc.valid, DUT.m0.cc.miss_set);
-   end
+   //always@(posedge clk) begin
+      
+   //end
    
    // outOffset: %d, offsetRegIn %d, counterOut %d, memDataOut: 0x%h, cacheDataOut: 0x%h
    
@@ -111,6 +108,10 @@ module mem_system_perfbench(/*AUTOARG*/);
 
       #2;
       // simulation delay
+      cycle = cycle + 1;
+      $display("Cycle num: %d, ourDone %b state: %d, nextstate: %d, hit: %d, wr: %d, rd: %d, write: %d, data_in to cache:%d, memoffset: %d, cacheoffset: %d",
+               cycle, Done, DUT.m0.cc.state, DUT.m0.cc.next_state, 
+               DUT.m0.cc.hit, Wr, Rd, DUT.m0.cc.select_wb, DUT.m0.mem.data_out, DUT.m0.cc.offset_mem, DUT.m0.cc.offset_cache);
       
       if (Done) begin
          n_replies = n_replies + 1;
@@ -123,7 +124,7 @@ module mem_system_perfbench(/*AUTOARG*/);
          end
          if (Wr) begin
             $display("LOG: ReQNum %4d Cycle %8d ReqCycle %8d Wr Addr 0x%04x Value 0x%04x ValueRef 0x%04x HIT %1d\n",
-                     n_replies, DUT.clkgen.cycle_count, req_cycle, Addr, DataIn, DataIn, CacheHit);
+                     n_replies, DUT.clkgen.cycle_count, req_cycle, Addr, DataOut, DataIn, CacheHit);
          end
          if (Rd | Wr) begin
             if (CacheHit) begin
@@ -176,7 +177,7 @@ module mem_system_perfbench(/*AUTOARG*/);
                test_success = 1'b0;               
 	           n_replies = n_requests;	       
 	        end            
-            rval = $fscanf(fd, "%d %d %d %d", 
+            rval = $fscanf(fd, "%d %d %16h %d", 
                            Wr, Rd, Addr, DataIn);
             if (rval == 0) begin
                rval = $fgets(line, fd);

@@ -1,5 +1,6 @@
-module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out, CacheHit, mem_wr, mem_rd, enable, comp, write, valid_in, select_wb, select_rd, offset_cache, offset_mem);
+module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out, CacheHit, mem_wr, mem_rd, enable, comp, write, valid_in, select_wb, select_rd, offset_cache, offset_mem, req_addr);
     input clk, rst, Rd, wr, hit, dirty, valid, stall_in;
+    input [1:0] req_addr;
     output reg Done, stall_out, CacheHit, mem_wr, mem_rd, enable, comp, write, valid_in, select_wb, select_rd;
     output [1:0] offset_cache, offset_mem;
 
@@ -7,6 +8,7 @@ module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out
     localparam COMP_WR = 3'b001;
     localparam MEM_WB = 3'b010;
     localparam CACHE_WB = 3'b011;
+    localparam FINISH = 3'b100;
 
     wire [2:0] state;
     reg[2:0] next_state;
@@ -26,11 +28,11 @@ module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out
     cla_4b mem_adder (.A({2'b00,offset_mem}), .B(4'h0), .C_in(1'b1), .S(mem_res), .C_out(), .G_out(), .P_out());
     assign Cache_offset_add = cache_res[1:0];
     assign Mem_offset_add = mem_res[1:0];
-    assign go = Rd | wr;
+    assign go =  Rd | wr;
 
-    wire miss;
-    reg miss_set; 
-    dff miss_reg(.d(miss_set), .q(miss), .clk(clk), .rst(rst));
+    // wire miss;
+    // reg miss_set; 
+    // dff miss_reg(.d(miss_set), .q(miss), .clk(clk), .rst(rst));
 
     always@(*) begin
         Done = 1'b0;
@@ -47,13 +49,13 @@ module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out
         Cache_offset = 2'b00;
         Mem_offset = 2'b00;
         next_state = COMP;
-        miss_set = miss;
+        // miss_set = miss;
         case(state)
             COMP : begin
                 Done = hit&Rd&valid;
                 stall_out = (~(hit&Rd&valid)) & go;
-                miss_set = ~(hit&Rd&valid);
-                CacheHit = hit&go&valid&(~miss);
+                //miss_set = ~(hit&Rd&valid);
+                CacheHit = hit&go&valid;
                 enable = 1;
                 comp = 1;
                 write = wr;
@@ -64,8 +66,8 @@ module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out
             COMP_WR: begin
                 Done = hit&valid;
                 stall_out = ~(hit&valid);
-                miss_set = ~(hit&wr&valid);
-                CacheHit = hit&valid&(~miss);
+                //miss_set = ~(hit&wr&valid);
+                CacheHit = hit&valid;
                 enable = 1;
                 comp = 1;
                 write = wr;
@@ -82,13 +84,19 @@ module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out
             end
             CACHE_WB: begin
                 stall_out = 1;
-                mem_rd = ~(&offset_mem);
+                mem_rd = ~(offset_cache[1] == 1'b1);
                 enable = 1;
-                select_wb = 1;
+                select_wb = Rd | (wr&(offset_cache != req_addr));
+                comp = ~(offset_cache == 1'b0);
                 write = (offset_mem[1] == 1'b1);
                 Cache_offset = (offset_mem[1] == 1'b1) ? Cache_offset_add : 2'b00;
                 Mem_offset = (&offset_mem) ? offset_mem : Mem_offset_add;
-                next_state = (&offset_cache) ? COMP : CACHE_WB;
+                next_state = (&offset_cache) ? FINISH : CACHE_WB;
+            end
+            FINISH: begin
+                enable = 1;
+                //stall_out = 1;
+                Done = 1;
             end
         endcase
     end
