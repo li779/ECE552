@@ -81,10 +81,26 @@ module mem_system_randbench(/*AUTOARG*/);
       n_cache_hits_total = 0;
       test_success = 1'b1;
    end
+
+   integer cycle;
+   initial begin
+      cycle = 0;
+   end
    
    always @ (posedge clk) begin
       #2;
       // simulation delay
+
+      cycle = cycle + 1;
+      $display("Cycle num: %d, ourDone %b state: %d, nextstate: %d, hit: %d, data_in to cache:%d, memoffset: %d, cacheoffset: %d, select: %d",
+               cycle, Done, DUT.m0.cc.state, DUT.m0.cc.next_state, 
+               DUT.m0.cc.CacheHit, DUT.m0.data_in_cache, DUT.m0.cc.offset_mem, DUT.m0.cc.offset_cache, DUT.m0.cc.select);
+      $display("Cache num: 0, data_in to cache:%d, cacheoffset: %d, tag_in: %d, enable: %d, hit: %d, tag_out: %d",
+               DUT.m0.c0.data_in, DUT.m0.c0.offset, DUT.m0.c0.tag_in,
+               DUT.m0.c0.enable, DUT.m0.c0.hit, DUT.m0.c0.tag_out);
+      $display("Cache num: 1, data_in to cache:%d, cacheoffset: %d, tag_in: %d, enable: %d, hit: %d, tag_out: %d",
+               DUT.m0.c1.data_in, DUT.m0.c1.offset, DUT.m0.c1.tag_in,
+               DUT.m0.c1.enable, DUT.m0.c1.hit, DUT.m0.c1.tag_out);
       
       if (Done) begin
          n_replies = n_replies + 1;

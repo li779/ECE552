@@ -93,16 +93,35 @@ module mem_system_perfbench(/*AUTOARG*/);
       fd = $fopen(addr_trace_file_name, "r");
    end
    
+   integer cycle;
+   initial begin
+      cycle = 0;
+   end
+   //always@(posedge clk) begin
+      
+   //end
    
-
-
+   // outOffset: %d, offsetRegIn %d, counterOut %d, memDataOut: 0x%h, cacheDataOut: 0x%h
    
    
    always @ (posedge clk) begin
 
       #2;
       // simulation delay
-      
+      cycle = cycle + 1;
+      $display("Cycle num: %d, ourDone %b state: %d, nextstate: %d, hit: %d, data_in to cache:%d, memoffset: %d, cacheoffset: %d, select: %d",
+               cycle, Done, DUT.m0.cc.state, DUT.m0.cc.next_state, 
+               DUT.m0.cc.CacheHit, DUT.m0.data_in_cache, DUT.m0.cc.offset_mem, DUT.m0.cc.offset_cache, DUT.m0.cc.select);
+      $display("Cache num: 0, data_in to cache:%d, cacheoffset: %d, tag_in: %d, enable: %d, hit: %d, tag_out: %d, data_out: %d",
+               DUT.m0.c0.data_in, DUT.m0.c0.offset, DUT.m0.c0.tag_in,
+               DUT.m0.c0.enable, DUT.m0.c0.hit, DUT.m0.c0.tag_out, DUT.m0.c0.data_out);
+      $display("Cache num: 1, data_in to cache:%d, cacheoffset: %d, tag_in: %d, enable: %d, hit: %d, tag_out: %d, data_out: %d",
+               DUT.m0.c1.data_in, DUT.m0.c1.offset, DUT.m0.c1.tag_in,
+               DUT.m0.c1.enable, DUT.m0.c1.hit, DUT.m0.c1.tag_out, DUT.m0.c1.data_out);
+      $display("Mem num: 1, data_in to mem:%d, addr: %d, wr: %d, rd: %d, data_out: %d",
+               DUT.m0.mem.data_in, DUT.m0.mem.addr, DUT.m0.mem.wr,
+               DUT.m0.mem.rd, DUT.m0.mem.data_out);
+
       if (Done) begin
          n_replies = n_replies + 1;
          if (CacheHit) begin
@@ -114,7 +133,7 @@ module mem_system_perfbench(/*AUTOARG*/);
          end
          if (Wr) begin
             $display("LOG: ReQNum %4d Cycle %8d ReqCycle %8d Wr Addr 0x%04x Value 0x%04x ValueRef 0x%04x HIT %1d\n",
-                     n_replies, DUT.clkgen.cycle_count, req_cycle, Addr, DataIn, DataIn, CacheHit);
+                     n_replies, DUT.clkgen.cycle_count, req_cycle, Addr, DataOut, DataIn, CacheHit);
          end
          if (Rd | Wr) begin
             if (CacheHit) begin
@@ -167,7 +186,7 @@ module mem_system_perfbench(/*AUTOARG*/);
                test_success = 1'b0;               
 	           n_replies = n_requests;	       
 	        end            
-            rval = $fscanf(fd, "%d %d %d %d", 
+            rval = $fscanf(fd, "%d %d %16h %d", 
                            Wr, Rd, Addr, DataIn);
             if (rval == 0) begin
                rval = $fgets(line, fd);
