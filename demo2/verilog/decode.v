@@ -83,7 +83,7 @@ module decode (clk, rst, instr, PC, newPC, conditions_next, pc_change, Reg_write
          .Sign_imm(immed), .jump(jump), .branch(branch), .branch_taken(branch_take),
          .regRead(regRead), .pc_2(pc_2_pre), .branch_cond(branch_cond));
    immediate sign_Extend(.instr(instr), .immed(immed));
-   regFile regFile0(.read1Data(ReadData_s), .read2Data(ReadData_t), 
+   regFile_bypass regFile0(.read1Data(ReadData_s), .read2Data(ReadData_t), 
                            .err(err), .clk(clk), .rst(rst), 
                            .read1RegSel(Rs), .read2RegSel(Reg2Sel), 
                            .writeRegSel(Reg_d_sel), .writeData(WriteData_d), 

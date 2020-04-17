@@ -95,7 +95,7 @@ module proc (/*AUTOARG*/
                   .pc_2(pc_2_em), .pc_2_ed(pc_2_mw), .wb_sel_ed(wb_sel), .Reg_d_sel_wd(Reg_d_sel_mw));
    wb wb0(.clk(clk), .rst(rst), .mem_data(mem_data), .PC_2(pc_2_mw), .ALU_data(result_mw), .Reg_write_mw(Reg_write_mw), .Reg_d_sel_mw(Reg_d_sel_mw),
          .signEx_data(imme_mw), .wb_sel(wb_sel), .wb_out(WriteData_d), .Reg_write_wd(Reg_write_wd), .Reg_d_sel_wd(Reg_d_sel_wd));
-   hazard hazard0(.Rs(Rs), .Rt(Reg2Sel), .Rd_wb(Reg_d_sel_mw), .Rd_mem(pass_em[8:6]), .Rd_exe(conditions_de[18:16]), .Reg_wr_wb(Reg_write_mw), .Reg_wr_mem(pass_em[5]), 
+   hazard hazard0(.Rs(Rs), .Rt(Reg2Sel), .Rd_mem(pass_em[8:6]), .Rd_exe(conditions_de[18:16]), .Reg_wr_mem(pass_em[5]), 
                  .Reg_wr_exe(conditions_de[15]), .jump(jump), .regRead(regRead), .R_type(R_type), .Reg_haz(haz_stall), .exceptions(exceptions));
 endmodule // proc
 // DUMMY LINE FOR REV CONTROL :0:

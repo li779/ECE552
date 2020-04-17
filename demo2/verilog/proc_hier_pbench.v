@@ -77,7 +77,7 @@ module proc_hier_pbench();
          //    ICacheReq_count = ICacheReq_count + 1;      
          // end    
 
-         $fdisplay(sim_log_file, "SIMLOG:: Cycle %d PC: %8x I: %8x R: %d %3d %8x M: %d %d %8x %8x RW: %b %b %b Rd: %3d %3d %3d Rs: %3d Rt: %3d HAZ: %d in:%4x",
+         $fdisplay(sim_log_file, "SIMLOG:: Cycle %d PC: %8x I: %8x R: %d %3d %8x M: %d %d %8x %8x RW: %b %b Rd: %3d %3d %3d Rs: %3d Rt: %3d HAZ: %d in:%4x",
                    DUT.c0.cycle_count,
                    PC,
                    Inst,
@@ -90,7 +90,6 @@ module proc_hier_pbench();
                    MemDataIn,
                    haz_Reg_write_exe,
                    haz_Reg_write_mem,
-                   haz_Reg_write_wb,
                    haz_Rd_exe,
                    haz_Rd_mem,
                    haz_Rd_wb,
@@ -198,7 +197,7 @@ module proc_hier_pbench();
    
    assign haz_Reg_write_exe = DUT.p0.hazard0.Reg_wr_exe;
    assign haz_Reg_write_mem = DUT.p0.hazard0.Reg_wr_mem;
-   assign haz_Reg_write_wb =  DUT.p0.hazard0.Reg_wr_wb;
+   //assign haz_Reg_write_wb =  DUT.p0.hazard0.Reg_wr_wb;
    assign haz_Rd_exe = DUT.p0.conditions_de[18:16];
    assign haz_Rd_mem = DUT.p0.pass_em[8:6];
    assign haz_Rd_wb = DUT.p0.Reg_d_sel_mw;
