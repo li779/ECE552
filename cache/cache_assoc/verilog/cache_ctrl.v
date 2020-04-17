@@ -24,6 +24,7 @@ module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out
     wire pre_select;
     wire select_vict;
     wire select_in;
+    wire hit_cond;
 
     dff cache_reg [1:0] (.d(Cache_offset), .q(offset_cache), .clk(clk), .rst(rst));
     dff mem_reg [1:0] (.d(Mem_offset), .q(offset_mem), .clk(clk), .rst(rst));
@@ -37,6 +38,7 @@ module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out
                         ({valid1,valid0} == 2'b10) ? 0 : victimway;
     assign select_in = (state == 3'b000) ? pre_select : select_vict;
     dff victim_ff(.d(select_in), .q(select_vict), .clk(clk), .rst(rst));
+    assign hit_cond = (valid0&hit0)|(valid1&hit1);
 
     // wire miss;
     // reg miss_set; 
@@ -61,12 +63,12 @@ module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out
         next_state = COMP;
         case(state)
             COMP : begin
-                Done = Rd&((valid0*hit0)|(valid1*hit1));
+                Done = Rd&hit_cond;
                 stall_out = (~Done) & go;
-                CacheHit = Rd&go&((valid0*hit0)|(valid1*hit1));
+                CacheHit = Rd&go&(hit_cond);
                 enable0 = 1;
                 enable1 = 1;
-                select = ((valid0*hit0)|(valid1*hit1))&hit1 | (~((valid0*hit0)|(valid1*hit1)))&(pre_select);
+                select = hit_cond&(valid1&hit1) | (~hit_cond)&(pre_select);
                 comp = 1;
                 write = wr;
                 next_state = wr&((valid0*hit0)|(valid1*hit1)) ? COMP_WR :
@@ -74,12 +76,12 @@ module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out
                             ((~valid)&go)|(~hit & ~dirty) ? CACHE_WB : COMP;
             end
             COMP_WR: begin
-                Done = hit&valid;
-                stall_out = ~(hit&valid);
-                CacheHit = hit&valid;
-                enable0 = hit0;
-                enable1 = hit1;
-                select = hit1;
+                Done = 1;
+                stall_out = 0;
+                CacheHit = hit_cond;
+                enable0 = valid0&hit0;
+                enable1 = valid1&hit1;
+                select = valid1&hit1;
                 comp = 1;
                 write = wr;
                 next_state = COMP;
