@@ -110,9 +110,9 @@ module mem_system_perfbench(/*AUTOARG*/);
       // simulation delay
       cycle = cycle + 1;
       
-      $display("Cycle num: %d, ourDone %b state: %d, nextstate: %d, hit: %d, data_in to cache:%d, memoffset: %d, cacheoffset: %d, select: %d",
+      $display("Cycle num: %3d, ourDone %b state:%d, nextstate:%d, hit: %d, data_in to cache:%d, memoffset: %d, cacheoffset: %d, select: %d, victimway: %d, victim_set: %d",
                cycle, Done, DUT.m0.cc.state, DUT.m0.cc.next_state, 
-               DUT.m0.cc.CacheHit, DUT.m0.data_in_cache, DUT.m0.cc.offset_mem, DUT.m0.cc.offset_cache, DUT.m0.cc.select);
+               DUT.m0.cc.CacheHit, DUT.m0.data_in_cache, DUT.m0.cc.offset_mem, DUT.m0.cc.offset_cache, DUT.m0.cc.select, DUT.m0.cc.victimway, DUT.m0.cc.victim_set);
       $display("Cache num: 0, data_in to cache:%d, cacheoffset: %d, tag_in: %d, enable: %d, valid: %d, hit: %d, tag_out: %d, data_out: %d",
                DUT.m0.c0.data_in, DUT.m0.c0.offset, DUT.m0.c0.tag_in,
                DUT.m0.c0.enable, DUT.m0.c0.valid, DUT.m0.c0.hit, DUT.m0.c0.tag_out, DUT.m0.c0.data_out);

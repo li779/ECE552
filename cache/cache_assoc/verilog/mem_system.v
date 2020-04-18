@@ -96,9 +96,6 @@ module mem_system(/*AUTOARG*/
                      .rd                (mem_rd));
    
 // your code here
-   wire victimway, victim_set;
-   dff victim (.d(victim_set), .q(victimway), .clk(clk), .rst(rst));
-   assign victim_set = (Done) ? (victimway ^ 1) : victimway;
 
    
    assign dirty = select? dirty1 : dirty0;
@@ -118,7 +115,7 @@ module mem_system(/*AUTOARG*/
    assign offset_cache_in = select_all? offset_cache_fin : Addr[2:0];
 
    
-cache_ctrl cc(.clk(clk), .rst(rst), .Rd(Rd), .wr(Wr), .hit(hit), .victimway(victimway), .valid1(valid1), .valid0(valid0),
+cache_ctrl cc(.clk(clk), .rst(rst), .Rd(Rd), .wr(Wr), .hit(hit), .valid1(valid1), .valid0(valid0),
     .dirty(dirty), .valid(valid), .stall_in(stall_memOut), .Done(Done), .req_addr(Addr[2:1]), .select(select),
     .stall_out(Stall), .CacheHit(CacheHit), .mem_wr(mem_wr), .mem_rd(mem_rd), .hit0(hit0), .hit1(hit1),
     .enable0(enable0), .enable1(enable1), .comp(comp), .write(write), .valid_in(valid_in), .select_wb(select_wb), 

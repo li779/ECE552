@@ -92,15 +92,15 @@ module mem_system_randbench(/*AUTOARG*/);
       // simulation delay
 
       cycle = cycle + 1;
-      $display("Cycle num: %d, ourDone %b state: %d, nextstate: %d, hit: %d, data_in to cache:%d, memoffset: %d, cacheoffset: %d, select: %d",
+      $display("Cycle num: %3d, ourDone %b state:%d, nextstate:%d, hit: %d, data_in to cache:%d, memoffset: %d, cacheoffset: %d, select: %d, victimway: %d, victim_set: %d",
                cycle, Done, DUT.m0.cc.state, DUT.m0.cc.next_state, 
-               DUT.m0.cc.CacheHit, DUT.m0.data_in_cache, DUT.m0.cc.offset_mem, DUT.m0.cc.offset_cache, DUT.m0.cc.select);
-      $display("Cache num: 0, data_in to cache:%d, cacheoffset: %d, tag_in: %d, enable: %d, hit: %d, tag_out: %d",
+               DUT.m0.cc.CacheHit, DUT.m0.data_in_cache, DUT.m0.cc.offset_mem, DUT.m0.cc.offset_cache, DUT.m0.cc.select, DUT.m0.cc.victimway, DUT.m0.cc.victim_set);
+      $display("Cache num: 0, data_in to cache:%d, cacheoffset: %d, tag_in: %d, enable: %d, hit: %d, tag_out: %d, valid: %d",
                DUT.m0.c0.data_in, DUT.m0.c0.offset, DUT.m0.c0.tag_in,
-               DUT.m0.c0.enable, DUT.m0.c0.hit, DUT.m0.c0.tag_out);
-      $display("Cache num: 1, data_in to cache:%d, cacheoffset: %d, tag_in: %d, enable: %d, hit: %d, tag_out: %d",
+               DUT.m0.c0.enable, DUT.m0.c0.hit, DUT.m0.c0.tag_out, DUT.m0.c0.valid);
+      $display("Cache num: 1, data_in to cache:%d, cacheoffset: %d, tag_in: %d, enable: %d, hit: %d, tag_out: %d, valid: %d",
                DUT.m0.c1.data_in, DUT.m0.c1.offset, DUT.m0.c1.tag_in,
-               DUT.m0.c1.enable, DUT.m0.c1.hit, DUT.m0.c1.tag_out);
+               DUT.m0.c1.enable, DUT.m0.c1.hit, DUT.m0.c1.tag_out, DUT.m0.c0.valid);
       
       if (Done) begin
          n_replies = n_replies + 1;
@@ -221,6 +221,8 @@ module mem_system_randbench(/*AUTOARG*/);
 		       $display("LOG: ReQNum %4d Cycle %8d ReqCycle %8d Wr Addr 0x%04x Value 0x%04x\n",
 			            n_replies, DUT.clkgen.cycle_count, req_cycle, Addr, DataIn);
             end
+            $display("*****ERROR*****");
+            $display("req: %d n_replies: %d done%d stall%d", n_requests, n_replies, DUT.m0.Done, DUT.m0.Stall);
 	        $display("ERROR! Request dropped");
             test_success = 1'b0;               
 	        n_replies = n_requests;	       
