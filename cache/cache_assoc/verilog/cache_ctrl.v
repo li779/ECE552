@@ -77,7 +77,7 @@ module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out
                 select = hit_cond&(valid1&hit1) | (~hit_cond)&(pre_select);
                 comp = 1;
                 write = wr;
-                next_state = go&((valid0*hit0)|(valid1*hit1)) ? COMP_WR :
+                next_state = go&hit_cond ? COMP_WR :
                             (~hit)&dirty&valid&go ? MEM_WB :
                             ((~valid)&go)|(~hit & ~dirty) ? CACHE_WB : COMP;
             end

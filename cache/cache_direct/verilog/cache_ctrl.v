@@ -87,7 +87,7 @@ module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out
                 mem_rd = ~(offset_cache[1] == 1'b1);
                 enable = 1;
                 select_wb = Rd | (wr&(offset_cache != req_addr));
-                comp = ~(offset_cache == 1'b0);
+                comp = ~(offset_cache == 2'b0);
                 write = (offset_mem[1] == 1'b1);
                 Cache_offset = (offset_mem[1] == 1'b1) ? Cache_offset_add : 2'b00;
                 Mem_offset = (&offset_mem) ? offset_mem : Mem_offset_add;
