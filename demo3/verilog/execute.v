@@ -4,8 +4,8 @@
    Filename        : execute.v
    Description     : This is the overall module for the execute stage of the processor.
 */
-module execute (conditions, ReadData_s, ReadData_t, imme, addr_em, ReadData_t_em, 
-                pass_next, imme_next, data_e2e, pc_2, pc_2_next, clk, rst);
+module execute (conditions, ReadData_s, ReadData_t, imme, addr_em, ReadData_t_em, data_m2m, mem_stall,
+                pass_next, imme_next, data_e2e, pc_2, pc_2_next, m2m_sel_dff, clk, rst);
 
    
    output [15:0] addr_em, data_e2e;
@@ -19,9 +19,10 @@ module execute (conditions, ReadData_s, ReadData_t, imme, addr_em, ReadData_t_em
    5 = reg_write (enable)
    6-8 = wb_sel
    */
-   input [15:0] imme, ReadData_t, ReadData_s, pc_2;
+   input [15:0] imme, ReadData_t, ReadData_s, pc_2, data_m2m;
    input [18:0] conditions;
-   input clk, rst;
+   input clk, rst, mem_stall;
+   input m2m_sel_dff;
    /* conditions is a group of all conditions that output from decode stage and carry all the way through pipeline
       conditions map:
       0: MemOp_sel
@@ -50,10 +51,10 @@ module execute (conditions, ReadData_s, ReadData_t, imme, addr_em, ReadData_t_em
    wire Result_sel, MemOp_sel, BTR_sel, SLBI_sel, Imme_sel, Shft_sel, Alu_sel;
 
    wire [8:0] pass;
-   wire [15:0] result;
+   wire [15:0] result, result_final;
 
    // m2m forward
-   //assign mem
+   assign result_final = m2m_sel_dff? data_m2m : result;
    // e2e forward
    //assign 
    // conditions assign
@@ -109,9 +110,9 @@ module execute (conditions, ReadData_s, ReadData_t, imme, addr_em, ReadData_t_em
 
    
 
-   dff data_ff [15:0] (.d(ReadData_t), .clk(clk), .rst(rst), .q(ReadData_t_em));
-   dff pass_ff [8:0] (.d(pass), .clk(clk), .rst(rst), .q(pass_next));
-   dff addr_ff [15:0] (.d(result), .clk(clk), .rst(rst), .q(addr_em));
-   dff pc_2_ff [15:0] (.d(pc_2), .clk(clk), .rst(rst), .q(pc_2_next));
-   dff imme_ff [15:0] (.d(imme), .clk(clk), .rst(rst), .q(imme_next));
+   single_reg data_ff (.writeData(ReadData_t), .clk(clk), .rst(rst), .readData(ReadData_t_em), .writeEn(~mem_stall));
+   single_reg #(9) pass_ff (.writeData(pass), .clk(clk), .rst(rst), .readData(pass_next), .writeEn(~mem_stall));
+   single_reg addr_ff (.writeData(result_final), .clk(clk), .rst(rst), .readData(addr_em), .writeEn(~mem_stall));
+   single_reg pc_2_ff (.writeData(pc_2), .clk(clk), .rst(rst), .readData(pc_2_next), .writeEn(~mem_stall));
+   single_reg imme_ff (.writeData(imme), .clk(clk), .rst(rst), .readData(imme_next), .writeEn(~mem_stall));
 endmodule

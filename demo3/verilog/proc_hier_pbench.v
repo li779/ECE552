@@ -31,6 +31,13 @@ module proc_hier_pbench();
    // wire        DCacheReq;
    // wire        ICacheReq;
    
+   wire Memread;
+   wire Memwrite;
+   wire m2m_sel_ex;
+   wire m2m_sel;
+   wire data_m2m;
+   wire mem_stall;
+   
 
    wire        Halt;         /* Halt executed and in Memory or writeback stage */
         
@@ -79,7 +86,7 @@ module proc_hier_pbench();
          //    ICacheReq_count = ICacheReq_count + 1;      
          // end    
 
-         $fdisplay(sim_log_file, "SIMLOG:: Cycle %d PC: %8x I: %8x R: %d %3d %8x M: %d %d %8x %8x",
+         $fdisplay(sim_log_file, "SIMLOG:: Cycle %d PC: %8x I: %8x R: %d %3d %8x M: %d %d %8x %8x PC: %d Mem_stall: %b",
                    DUT.c0.cycle_count,
                    PC,
                    Inst,
@@ -90,14 +97,8 @@ module proc_hier_pbench();
                    MemWrite,
                    MemAddress,
                    MemDataIn,
-                   haz_Reg_write_exe,
-                   haz_Reg_write_mem,
-                   haz_Rd_exe,
-                   haz_Rd_mem,
-                   haz_Rd_wb,
-                   haz_Rs,
-                   haz_Rt,
-                   haz_detect, pc_in 
+                   pc_in,
+                   mem_stall 
                   );
          
          $fdisplay(sim_log_file, "SIMLOG:: EXE_WR: %b MEM_WR: %b EXE_RD: %3d MEM_RD: %3d WB_WR: %3d Rs: %3d Rt: %3d HAZ: %d E2E: %2b M2E: %2b data_e2e: %8x",
@@ -113,6 +114,20 @@ module proc_hier_pbench();
                    m2e_sel,
                    data_e2e,
                   );
+
+         $fdisplay(sim_log_file, "SIMLOG:: MEM_RD: %b MEM_WR: %b EXE_RD: %3d Rs: %3d Rt: %3d HAZ: %d m2m_sel_ex: %b m2m_sel_mem: %b data_m2m: %8x",
+                   Memread,
+                   Memwrite,
+                   haz_Rd_exe,
+                   haz_Rs,
+                   haz_Rt,
+                   haz_detect,
+                   m2m_sel_ex,
+                   m2m_sel,
+                   data_m2m,
+                  );
+         $fdisplay(sim_log_file, "---------End-------------");
+
          if (RegWrite) begin
             $fdisplay(trace_file,"REG: %d VALUE: 0x%04x",
                       WriteRegister,
@@ -225,6 +240,12 @@ module proc_hier_pbench();
    assign e2e_sel = DUT.p0.hazard0.e2e_sel;
    assign m2e_sel = DUT.p0.hazard0.m2e_sel;
    assign data_e2e = DUT.p0.data_e2e;
+   assign data_m2m = DUT.p0.memory0.mem_data;
+   assign Memread = DUT.p0.hazard0.Memread;
+   assign Memwrite = DUT.p0.hazard0.Memwrite;
+   assign m2m_sel = DUT.p0.execute0.m2m_sel_dff;
+   assign m2m_sel_ex = DUT.p0.hazard0.m2m_sel;
+   assign mem_stall = DUT.p0.mem_stall;
 endmodule
 
 // DUMMY LINE FOR REV CONTROL :0:

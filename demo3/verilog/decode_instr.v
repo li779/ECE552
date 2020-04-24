@@ -5,8 +5,8 @@
    Description     : This is the module for decoding instruction.
 */
 module decode_instr (instr, rst, Alu_ops, Result_sel, MemOp_sel, BTR_sel, SLBI_sel, Imme_sel, 
-                     Shft_sel, Alu_sel, Rs, Rt, Rd, jump, branch, exceptions,
-                     regRead, Reg_write, wb_sel, St_sel, Ld_sel, halt, branch_cond, R_type, haz_stall);
+                     Shft_sel, Alu_sel, Rs, Rt, Rd, jump, branch, exceptions, Memwrite,
+                     regRead, Reg_write, wb_sel, St_sel, Ld_sel, halt, branch_cond, R_type, haz_stall, instr_stall);
 
     //output J_type, I1_type, I2_type, R_type; // J: jump; I1: imme alu; I2: pc, R: 3_reg
     //output exten_type; // 0: zero-extend; 1: sign-extend
@@ -14,10 +14,10 @@ module decode_instr (instr, rst, Alu_ops, Result_sel, MemOp_sel, BTR_sel, SLBI_s
     output [1:0] Alu_ops, wb_sel, branch_cond;
     output Result_sel; // 0: from alu, 1: from flag bit
     output MemOp_sel, BTR_sel, SLBI_sel, Imme_sel, Shft_sel, Alu_sel, jump, 
-            branch, regRead, Reg_write, St_sel, Ld_sel, halt, R_type, exceptions;
+            branch, regRead, Reg_write, St_sel, Ld_sel, halt, R_type, exceptions, Memwrite;
     input [15:0] instr;
     input rst;
-    input haz_stall;
+    input haz_stall, instr_stall;
 
     wire NOP, I1_type, stop;
     // decode instruction type
@@ -47,6 +47,7 @@ module decode_instr (instr, rst, Alu_ops, Result_sel, MemOp_sel, BTR_sel, SLBI_s
     assign MemOp_sel = (instr[15:11] == 5'b10000) | (instr[15:11] == 5'b10011) | (instr[15:11] == 5'b10001);
     assign St_sel = ((instr[15:11] == 5'b10000) | (instr[15:11] == 5'b10011)) & stop;
     assign Ld_sel = (instr[15:11] == 5'b10001) & stop;
+    assign Memwrite = (instr[15:11] == 5'b10000) | (instr[15:11] == 5'b10011);
 
     // jump
     assign jump = (instr[15:13] == 3'b001);
@@ -63,7 +64,7 @@ module decode_instr (instr, rst, Alu_ops, Result_sel, MemOp_sel, BTR_sel, SLBI_s
                     (instr[15:11] == 5'b11000) ? 2'b10 : 2'b11;
     // NOP and halt
     assign halt = ~(|instr[15:11]) & (~rst);
-    assign NOP = (instr[15:11] == 5'b00001) | rst | haz_stall;
+    assign NOP = (instr[15:11] == 5'b00001) | rst | haz_stall | instr_stall;
     assign stop = ~NOP & ~halt;
     assign exceptions = (instr[15:13] == 3'b000) | (instr[15:11] == 5'b11000);
 

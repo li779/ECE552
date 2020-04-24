@@ -6,18 +6,18 @@
 */
 module decode (clk, rst, instr, PC, newPC, conditions_next, pc_change, Reg_write_wd, jump, regRead, R_type, haz_stall, branch_taken,
                ReadData_t_next, ReadData_s_next, WriteData_d, immed_next, pc_2_next, pc_2_pre, Reg_d_sel, exceptions, Rs, Reg2Sel,
-               e2e_sel, m2e_sel, data_m2e, data_e2e, St_sel);
+               e2e_sel, m2e_sel, data_m2e, data_e2e, Memwrite, m2m_sel, m2m_sel_dff, mem_stall, instr_stall);
 
    // TODO: Your code here
    input [15:0] instr, PC, WriteData_d, pc_2_pre, data_m2e, data_e2e;
-   input rst, clk;
+   input rst, clk, mem_stall, instr_stall;
    input [1:0] e2e_sel, m2e_sel;
    input [2:0] Reg_d_sel;
-   input Reg_write_wd, haz_stall;
+   input Reg_write_wd, haz_stall, m2m_sel;
    output [15:0] newPC, ReadData_s_next, ReadData_t_next, immed_next, pc_2_next;
    output [18:0] conditions_next;
    output [2:0] Rs, Reg2Sel;
-   output pc_change, jump, regRead, R_type, exceptions, branch_taken, St_sel;
+   output pc_change, jump, regRead, R_type, exceptions, branch_taken, Memwrite, m2m_sel_dff;
    /* conditions is a group of all conditions that output from decode stage and carry all the way through pipeline
       conditions map:
       0: MemOp_sel
@@ -58,7 +58,9 @@ module decode (clk, rst, instr, PC, newPC, conditions_next, pc_change, Reg_write
    assign ReadData_s = e2e_sel[0] ? data_e2e : 
                        m2e_sel[0] ? data_m2e : ReadData_s_old;
 
-   dff flops (.d(halt_in), .clk(clk), .rst(rst), .q(halt));
+   wire halt_next;
+   assign halt_next = halt_in;
+   dff flops (.d(halt_next), .clk(clk), .rst(rst), .q(halt));
 
    // conditions assign
    assign conditions[0] = MemOp_sel;
@@ -101,11 +103,12 @@ module decode (clk, rst, instr, PC, newPC, conditions_next, pc_change, Reg_write
                         .Result_sel(Result_sel), .MemOp_sel(MemOp_sel), 
                         .BTR_sel(BTR_sel), .SLBI_sel(SLBI_sel), .R_type(R_type),
                         .Imme_sel(Imme_sel), .Shft_sel(Shft_sel), .exceptions(exceptions),
-                        .Alu_sel(Alu_sel), .Rs(Rs), .Rt(Rt), .Rd(Rd), .haz_stall(haz_stall),
+                        .Alu_sel(Alu_sel), .Rs(Rs), .Rt(Rt), .Rd(Rd), .haz_stall(haz_stall), .Memwrite(Memwrite),
                         .jump(jump), .branch(branch), .regRead(regRead), .Reg_write(Reg_write),
-                        .wb_sel(wb_sel), .St_sel(St_sel), .Ld_sel(Ld_sel), .halt(halt_in), .branch_cond(branch_cond));
+                        .wb_sel(wb_sel), .St_sel(St_sel), .Ld_sel(Ld_sel), .halt(halt_in), .branch_cond(branch_cond),
+                        .instr_stall(instr_stall));
 
-   dff rst_ff (.d(rst), .clk(clk), .rst(1'b0), .q(rst_ed));
+   single_reg #(1) rst_ff (.writeData(rst), .clk(clk), .rst(1'b0), .readData(rst_ed), .writeEn(~instr_stall));
 
    // pipeline registers
    //dff pc_in [15:0] (.d(PC), .clk(clk), .rst(rst), .q(PC_pip));
@@ -113,10 +116,11 @@ module decode (clk, rst, instr, PC, newPC, conditions_next, pc_change, Reg_write
    //dff pc_2_ff [15:0] (.d(pc_2_pre), .clk(clk), .rst(rst), .q(pc_2));
 
 
-   dff conditions_ff [18:0] (.d(conditions), .clk(clk), .rst(rst), .q(conditions_next));
-   dff imme_ff [15:0] (.d(immed), .clk(clk), .rst(rst), .q(immed_next));
-   dff ReadData_t_ff [15:0] (.d(ReadData_t), .clk(clk), .rst(rst), .q(ReadData_t_next));
-   dff ReadData_s_ff [15:0] (.d(ReadData_s), .clk(clk), .rst(rst), .q(ReadData_s_next));
-   dff pc_2_ff [15:0] (.d(pc_2_pre), .clk(clk), .rst(rst), .q(pc_2_next));
+   single_reg #(19) conditions_ff (.writeData(conditions), .clk(clk), .rst(rst), .readData(conditions_next), .writeEn(~mem_stall));
+   single_reg imme_ff (.writeData(immed), .clk(clk), .rst(rst), .readData(immed_next), .writeEn(~mem_stall));
+   single_reg ReadData_t_ff (.writeData(ReadData_t), .clk(clk), .rst(rst), .readData(ReadData_t_next), .writeEn(~mem_stall));
+   single_reg ReadData_s_ff (.writeData(ReadData_s), .clk(clk), .rst(rst), .readData(ReadData_s_next), .writeEn(~mem_stall));
+   single_reg pc_2_ff (.writeData(pc_2_pre), .clk(clk), .rst(rst), .readData(pc_2_next), .writeEn(~mem_stall));
+   single_reg #(1) m2m (.writeData(m2m_sel), .clk(clk), .rst(rst), .readData(m2m_sel_dff), .writeEn(~mem_stall));
 
 endmodule

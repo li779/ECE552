@@ -5,11 +5,11 @@
    Description     : This module contains all components in the Memory stage of the 
                      processor.
 */
-module memory (pass, imme, imme_next, data_in, data_out, addr_pre, clk, rst, pc_2, pc_2_ed, 
-               wb_sel_ed, result_mw, Reg_write_wd, Reg_d_sel_wd, data_m2e);
+module memory (pass, imme, imme_next, data_in, data_out, addr_pre, clk, rst, pc_2, pc_2_ed, mem_stall, 
+               wb_sel_ed, result_mw, Reg_write_wd, Reg_d_sel_wd, data_m2e, data_m2m);
 
     // TODO: Your code here
-    output [15:0] data_out, data_m2e;
+    output [15:0] data_out, data_m2e, data_m2m;
     output [15:0] pc_2_ed, imme_next, result_mw;
     output [1:0] wb_sel_ed;
     output Reg_write_wd;
@@ -18,6 +18,7 @@ module memory (pass, imme, imme_next, data_in, data_out, addr_pre, clk, rst, pc_
     input [15:0] addr_pre;
     input clk;
     input rst;
+    input mem_stall;
     input [8:0] pass;
     /*
    0 = St_sel;
@@ -34,13 +35,15 @@ module memory (pass, imme, imme_next, data_in, data_out, addr_pre, clk, rst, pc_
     wire [1:0] wb_sel;
 
     assign memRead = pass[1];
-    assign memWrite = pass[0];
+    assign memWrite = pass[0] & ~halt;
     assign halt = pass[2];
     assign wb_sel = pass[4:3];
     assign Reg_write_mw = pass[5];
     assign Reg_d_sel = pass[8:6];
+    assign data_m2m = mem_data;
 
-    memory2c memory_file (.data_out(mem_data), .data_in(data_in), .addr(addr_pre), .enable((memRead|memWrite)&(~halt)), .wr(memWrite), .createdump(halt), .clk(clk), .rst(rst));
+    memory2c memory_file (.data_out(mem_data), .data_in(data_in), .addr(addr_pre), .enable((memRead|memWrite)&(~halt)), 
+                          .wr(memWrite), .createdump(halt), .clk(clk), .rst(rst));
     
     mux4_1 wb_select[15:0](.InA(pc_2), .InB(mem_data), .InC(imme), 
                     .InD(addr_pre), .S(wb_sel), .Out(data_m2e));
@@ -51,12 +54,12 @@ module memory (pass, imme, imme_next, data_in, data_out, addr_pre, clk, rst, pc_
     // dff pc_2_ff [15:0] (.d(pc_2_pre), .clk(clk), .rst(rst), .q(pc_2));
     // dff imme_ff [15:0] (.d(imme_pre), .clk(clk), .rst(rst), .q(imme));
 
-    dff mem_data_ff [15:0] (.d(mem_data), .clk(clk), .rst(rst), .q(data_out));
-   dff PC_2_ff [15:0] (.d(pc_2), .clk(clk), .rst(rst), .q(pc_2_ed));
-   dff ALU_data_ff [15:0] (.d(addr_pre), .clk(clk), .rst(rst), .q(result_mw));
-   dff signEx_data_ff [15:0] (.d(imme), .clk(clk), .rst(rst), .q(imme_next));
-   dff Reg_write_ff (.d(Reg_write_mw), .clk(clk), .rst(rst), .q(Reg_write_wd));
-   dff wb_sel_ff [1:0] (.d(wb_sel), .clk(clk), .rst(rst), .q(wb_sel_ed));
-   dff Reg_d_sel_ff [2:0] (.d(Reg_d_sel), .clk(clk), .rst(rst), .q(Reg_d_sel_wd));
+   single_reg mem_data_ff (.writeData(mem_data), .clk(clk), .rst(rst), .readData(data_out), .writeEn(~mem_stall));
+   single_reg PC_2_ff (.writeData(pc_2), .clk(clk), .rst(rst), .readData(pc_2_ed), .writeEn(~mem_stall));
+   single_reg ALU_data_ff (.writeData(addr_pre), .clk(clk), .rst(rst), .readData(result_mw), .writeEn(~mem_stall));
+   single_reg signEx_data_ff (.writeData(imme), .clk(clk), .rst(rst), .readData(imme_next), .writeEn(~mem_stall));
+   single_reg #(1) Reg_write_ff (.writeData(Reg_write_mw), .clk(clk), .rst(rst), .readData(Reg_write_wd), .writeEn(~mem_stall));
+   single_reg #(2) wb_sel_ff (.writeData(wb_sel), .clk(clk), .rst(rst), .readData(wb_sel_ed), .writeEn(~mem_stall));
+   single_reg #(3) Reg_d_sel_ff (.writeData(Reg_d_sel), .clk(clk), .rst(rst), .readData(Reg_d_sel_wd), .writeEn(~mem_stall));
 
 endmodule
