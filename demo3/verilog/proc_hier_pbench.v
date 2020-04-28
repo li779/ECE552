@@ -26,10 +26,10 @@ module proc_hier_pbench();
    wire [15:0] pc_in;
    wire [1:0] e2e_sel, m2e_sel;
    wire [15:0] data_e2e;
-   // wire        DCacheHit;
-   // wire        ICacheHit;
-   // wire        DCacheReq;
-   // wire        ICacheReq;
+   wire        DCacheHit;
+   wire        ICacheHit;
+   wire        DCacheReq;
+   wire        ICacheReq;
    
    wire Memread;
    wire Memwrite;
@@ -37,7 +37,9 @@ module proc_hier_pbench();
    wire m2m_sel;
    wire data_m2m;
    wire mem_stall;
-   
+   wire Dcache_rd, Dcache_wr;
+   wire [15:0] Dcache_addr, Dcache_dataOut;
+   wire [2:0] Dcache_state; 
 
    wire        Halt;         /* Halt executed and in Memory or writeback stage */
         
@@ -86,7 +88,7 @@ module proc_hier_pbench();
          //    ICacheReq_count = ICacheReq_count + 1;      
          // end    
 
-         $fdisplay(sim_log_file, "SIMLOG:: Cycle %d PC: %8x I: %8x R: %d %3d %8x M: %d %d %8x %8x PC: %d Mem_stall: %b",
+         $fdisplay(sim_log_file, "SIMLOG:: Cycle %d PC: %8x I: %8x R: %d %3d %8x M: %d %d %8x %8x %8x PC: %d Mem_stall: %b",
                    DUT.c0.cycle_count,
                    PC,
                    Inst,
@@ -97,6 +99,7 @@ module proc_hier_pbench();
                    MemWrite,
                    MemAddress,
                    MemDataIn,
+                   MemDataOut,
                    pc_in,
                    mem_stall 
                   );
@@ -125,6 +128,14 @@ module proc_hier_pbench();
                    m2m_sel_ex,
                    m2m_sel,
                    data_m2m,
+                  );
+
+         $fdisplay(sim_log_file, "SIMLOG:: DataCache RD: %b WR: %b ADDR: %8x STATE: %d DATAOUT: %8x",
+                   Dcache_rd,
+                   Dcache_wr,
+                   Dcache_addr,
+                   Dcache_state,
+                   Dcache_dataOut,
                   );
          $fdisplay(sim_log_file, "---------End-------------");
 
@@ -185,11 +196,11 @@ module proc_hier_pbench();
    // Data being written to the register. (16 bits)
    
    //assign MemRead =  (DUT.p0.memRxout & ~DUT.p0.notdonem);
-   assign MemRead =  DUT.p0.memory0.memRead;
+   assign MemRead =  DUT.p0.memory0.memRead && DUT.p0.memory0.Done;
    // Is memory being read, one bit signal (1 means yes, 0 means no)
    
    //assign MemWrite = (DUT.p0.memWxout & ~DUT.p0.notdonem);
-   assign MemWrite = DUT.p0.memory0.memWrite;
+   assign MemWrite = DUT.p0.memory0.memWrite && DUT.p0.memory0.Done;
    // Is memory being written to (1 bit signal)
    
    assign MemAddress = DUT.p0.memory0.addr_pre;
@@ -201,24 +212,24 @@ module proc_hier_pbench();
    assign MemDataOut = DUT.p0.memory0.mem_data;
    // Data read from memory for memory reads (16 bits)
 
-   /*
+   
    // new added 05/03
-   assign ICacheReq = DUT.p0.readData;
+   assign ICacheReq = 1'b1;
    // Signal indicating a valid instruction read request to cache
    // Above assignment is a dummy example
    
-   assign ICacheHit = DUT.p0.readData;
+   assign ICacheHit = DUT.p0.fetch0.instr_file.CacheHit;
    // Signal indicating a valid instruction cache hit
    // Above assignment is a dummy example
 
-   assign DCacheReq = DUT.p0.readData;
+   assign DCacheReq = DUT.p0.memory0.memRead;
    // Signal indicating a valid instruction data read or write request to cache
    // Above assignment is a dummy example
    //    
-   assign DCacheHit = DUT.p0.readData;
+   assign DCacheHit = DUT.p0.memory0.memory_file.CacheHit;
    // Signal indicating a valid data cache hit
    // Above assignment is a dummy example
-   */
+   
    
    assign Halt = DUT.p0.memory0.halt;
    // Processor halted
@@ -245,7 +256,12 @@ module proc_hier_pbench();
    assign Memwrite = DUT.p0.hazard0.Memwrite;
    assign m2m_sel = DUT.p0.execute0.m2m_sel_dff;
    assign m2m_sel_ex = DUT.p0.hazard0.m2m_sel;
-   assign mem_stall = DUT.p0.mem_stall;
+   assign mem_stall = DUT.p0.memory0.data_stall;
+   assign Dcache_rd = DUT.p0.memory0.memory_file.cc.Rd;
+   assign Dcache_wr  = DUT.p0.memory0.memory_file.cc.wr;
+   assign Dcache_addr = DUT.p0.memory0.memory_file.Addr;
+   assign Dcache_state = DUT.p0.memory0.memory_file.cc.state;
+   assign Dcache_dataOut = DUT.p0.memory0.memory_file.DataOut;
 endmodule
 
 // DUMMY LINE FOR REV CONTROL :0:
