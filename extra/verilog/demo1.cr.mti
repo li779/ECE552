@@ -1,0 +1,169 @@
+D:/Yichen_Li/ECE552/homework/project/demo1/verilog/single_reg.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/single_reg.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module single_reg
+
+Top level modules:
+	single_reg
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/cla_16b.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/cla_16b.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module cla_16b
+
+Top level modules:
+	cla_16b
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/dff.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/dff.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module dff
+
+Top level modules:
+	dff
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/shift_layer.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/shift_layer.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module shift_layer
+
+Top level modules:
+	shift_layer
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/alu.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/alu.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module alu
+
+Top level modules:
+	alu
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/xor2.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/xor2.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module xor2
+
+Top level modules:
+	xor2
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/clkrst.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/clkrst.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module clkrst
+
+Top level modules:
+	clkrst
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/xor3.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/xor3.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module xor3
+
+Top level modules:
+	xor3
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/arith_Op.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/arith_Op.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module arith_Op
+
+Top level modules:
+	arith_Op
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/memory2c.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/memory2c.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module memory2c
+
+Top level modules:
+	memory2c
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/memory2c.syn.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/memory2c.syn.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module memory2c
+
+Top level modules:
+	memory2c
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/mux4_1_16b.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/mux4_1_16b.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module mux4_1_16b
+
+Top level modules:
+	mux4_1_16b
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/regFile_bypass.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/regFile_bypass.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module regFile_bypass
+
+Top level modules:
+	regFile_bypass
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/BTR.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/BTR.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module BTR
+
+Top level modules:
+	BTR
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/nor2.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/nor2.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module nor2
+
+Top level modules:
+	nor2
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/carry.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/carry.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module carry
+
+Top level modules:
+	carry
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/not1.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/not1.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module not1
+
+Top level modules:
+	not1
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/nor3.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/nor3.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module nor3
+
+Top level modules:
+	nor3
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/proc_hier.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/proc_hier.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module proc_hier
+
+Top level modules:
+	proc_hier
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/nand2.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/nand2.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module nand2
+
+Top level modules:
+	nand2
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/nand3.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/nand3.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module nand3
+
+Top level modules:
+	nand3
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/shifter.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/shifter.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module shifter
+
+Top level modules:
+	shifter
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/cla_4b.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/cla_4b.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module cla_4b
+
+Top level modules:
+	cla_4b
+
+} {} {}} D:/Yichen_Li/ECE552/homework/project/demo1/verilog/fullAdder_1b.v {1 {vlog -work work -stats=none D:/Yichen_Li/ECE552/homework/project/demo1/verilog/fullAdder_1b.v
+Model Technology ModelSim ALTERA vlog 10.4d Compiler 2015.12 Dec 30 2015
+-- Compiling module fullAdder_1b
+
+Top level modules:
+	fullAdder_1b
+
+} {} {}}
