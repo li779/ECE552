@@ -216,7 +216,7 @@ module proc_hier_pbench();
 
    
    // new added 05/03
-   assign ICacheReq = 1'b1;
+   assign ICacheReq = Dut.p0.fetch0.instr_file.Done;
    // Signal indicating a valid instruction read request to cache
    // Above assignment is a dummy example
    
