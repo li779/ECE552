@@ -26,7 +26,7 @@ module hazard(Rs, Rt, Rd_mem, Rd_exe, Reg_wr_mem, Reg_wr_exe, jump, regRead, R_t
     // assign m2e_sel[1] = ((Rt == Rd_mem) & Reg_wr_mem) & Rt_read & ~m2m_haz;
 
     // assign m2m_sel = (|e2e_sel) & m2m_haz;
-    assign Reg_haz = ((Rs_conf & Rs_read)|(Rt_conf & Rt_read)) & Memread;
+    //assign Reg_haz = ((Rs_conf & Rs_read)|(Rt_conf & Rt_read)) & Memread;
     assign m2m_haz = Memread & Memwrite;
     assign e2e_sel[0] = ((Rs == Rd_exe) & Reg_wr_exe) & Rs_read;
     assign e2e_sel[1] = ((Rt == Rd_exe) & Reg_wr_exe) & Rt_read;
@@ -34,7 +34,8 @@ module hazard(Rs, Rt, Rd_mem, Rd_exe, Reg_wr_mem, Reg_wr_exe, jump, regRead, R_t
     assign m2e_sel[0] = ((Rs == Rd_mem) & Reg_wr_mem) & Rs_read;
     assign m2e_sel[1] = ((Rt == Rd_mem) & Reg_wr_mem) & Rt_read;
 
-    assign m2m_sel = 0;
-
+    //assign m2m_sel = 0;
+    assign Reg_haz = ((Rs_conf & Rs_read)|(Rt_conf & Rt_read)) & Memread & (~m2e_sel);
+    assign m2m_sel = Memread & Memwrite & (((Rt == Rd_exe) & Reg_wr_exe) & Rt_read);
 
 endmodule

@@ -52,10 +52,10 @@ module execute (conditions, ReadData_s, ReadData_t, imme, addr_em, ReadData_t_em
    wire Result_sel, MemOp_sel, BTR_sel, SLBI_sel, Imme_sel, Shft_sel, Alu_sel;
 
    wire [8:0] pass;
-   wire [15:0] result, result_final;
+   wire [15:0] result, data_in;
 
    // m2m forward
-   assign result_final = m2m_sel_dff? data_m2m : result;
+   assign data_in = m2m_sel_dff? data_m2m : ReadData_t;
    // e2e forward
    //assign 
    // conditions assign
@@ -111,9 +111,9 @@ module execute (conditions, ReadData_s, ReadData_t, imme, addr_em, ReadData_t_em
 
    
 
-   single_reg data_ff (.writeData(ReadData_t), .clk(clk), .rst(rst), .readData(ReadData_t_em), .writeEn(~mem_stall));
+   single_reg data_ff (.writeData(data_in), .clk(clk), .rst(rst), .readData(ReadData_t_em), .writeEn(~mem_stall));
    single_reg #(9) pass_ff (.writeData(pass), .clk(clk), .rst(rst), .readData(pass_next), .writeEn(~mem_stall));
-   single_reg addr_ff (.writeData(result_final), .clk(clk), .rst(rst), .readData(addr_em), .writeEn(~mem_stall));
+   single_reg addr_ff (.writeData(result), .clk(clk), .rst(rst), .readData(addr_em), .writeEn(~mem_stall));
    single_reg pc_2_ff (.writeData(pc_2), .clk(clk), .rst(rst), .readData(pc_2_next), .writeEn(~mem_stall));
    single_reg imme_ff (.writeData(imme), .clk(clk), .rst(rst), .readData(imme_next), .writeEn(~mem_stall));
    single_reg #(1) err_ff (.writeData(err_de), .clk(clk), .rst(rst), .readData(err), .writeEn(~mem_stall));
