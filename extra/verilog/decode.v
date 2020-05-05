@@ -6,7 +6,7 @@
 */
 module decode (clk, rst, instr, PC, newPC, conditions_next, pc_change, Reg_write_wd, jump, regRead, R_type, haz_stall, branch_taken,
                ReadData_t_next, ReadData_s_next, WriteData_d, immed_next, pc_2_next, pc_2_pre, Reg_d_sel, exceptions, Rs, Reg2Sel,
-               e2e_sel, m2e_sel, data_m2e, data_e2e, Memwrite, m2m_sel, m2m_sel_dff, mem_stall, instr_stall, err_fd, branch_decode);
+               e2e_sel, m2e_sel, data_m2e, data_e2e, Memwrite, m2m_sel, m2m_sel_dff, mem_stall, instr_stall, err_fd, branch_decode, jump_read);
 
    // TODO: Your code here
    input [15:0] instr, PC, WriteData_d, pc_2_pre, data_m2e, data_e2e;
@@ -17,7 +17,7 @@ module decode (clk, rst, instr, PC, newPC, conditions_next, pc_change, Reg_write
    output [15:0] newPC, ReadData_s_next, ReadData_t_next, immed_next, pc_2_next;
    output [18:0] conditions_next;
    output [2:0] Rs, Reg2Sel;
-   output pc_change, jump, regRead, R_type, exceptions, branch_taken, Memwrite, m2m_sel_dff, branch_decode;
+   output pc_change, jump, regRead, R_type, exceptions, branch_taken, Memwrite, m2m_sel_dff, branch_decode, jump_read;
    /* conditions is a group of all conditions that output from decode stage and carry all the way through pipeline
       conditions map:
       0: MemOp_sel
@@ -100,7 +100,7 @@ module decode (clk, rst, instr, PC, newPC, conditions_next, pc_change, Reg_write
                            .writeRegSel(Reg_d_sel), .writeData(WriteData_d), 
                            .writeEn(Reg_write_wd));
    decode_instr decoder(.instr(instr), .Alu_ops(Alu_ops), .rst(rst_ed), 
-                        .Result_sel(Result_sel), .MemOp_sel(MemOp_sel), 
+                        .Result_sel(Result_sel), .MemOp_sel(MemOp_sel), .jump_read(jump_read),
                         .BTR_sel(BTR_sel), .SLBI_sel(SLBI_sel), .R_type(R_type),
                         .Imme_sel(Imme_sel), .Shft_sel(Shft_sel), .exceptions(exceptions),
                         .Alu_sel(Alu_sel), .Rs(Rs), .Rt(Rt), .Rd(Rd), .haz_stall(haz_stall), .Memwrite(Memwrite),

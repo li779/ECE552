@@ -23,10 +23,11 @@ module proc_hier_pbench();
    wire [15:0] MemDataIn;
    wire [15:0] MemDataOut;
    wire [2:0] haz_Rd_exe, haz_Rd_mem ,haz_Rd_wb, haz_Rs, haz_Rt;//ReadData_s;
-   wire [15:0] pc_in;
+   wire [15:0] pc_in, pc_pred, pc_raw;
    wire [1:0] e2e_sel, m2e_sel;
-   wire [15:0] data_e2e;
+   wire [15:0] data_e2e, instr_pre;
    wire err;
+   wire predict;
    wire        DCacheHit;
    wire        ICacheHit;
    wire        DCacheReq;
@@ -38,9 +39,9 @@ module proc_hier_pbench();
    wire m2m_sel;
    wire data_m2m;
    wire mem_stall;
-   wire Dcache_rd, Dcache_wr;
-   wire [15:0] Dcache_addr, Dcache_dataOut;
-   wire [2:0] Dcache_state; 
+   wire Dcache_rd, Dcache_wr, Icache_rd, Icache_wr;
+   wire [15:0] Dcache_addr, Dcache_dataOut, Icache_addr, Icache_dataOut;
+   wire [2:0] Dcache_state, Icache_state; 
 
    wire        Halt;         /* Halt executed and in Memory or writeback stage */
         
@@ -89,7 +90,7 @@ module proc_hier_pbench();
             ICacheReq_count = ICacheReq_count + 1;      
          end    
 
-         $fdisplay(sim_log_file, "SIMLOG:: Cycle %d PC: %8x I: %8x R: %d %3d %8x M: %d %d %8x %8x %8x PC: %d Mem_stall: %b ERR: %b",
+         $fdisplay(sim_log_file, "SIMLOG:: Cycle %d PC: %8x I: %8x R: %d %3d %8x M: %d %d %8x %8x %8x i_pre: %8x Mem_stall: %b ERR: %b PRE: %b pc_pred:  %8x, pc_raw:  %8x",
                    DUT.c0.cycle_count,
                    PC,
                    Inst,
@@ -101,9 +102,12 @@ module proc_hier_pbench();
                    MemAddress,
                    MemDataIn,
                    MemDataOut,
-                   pc_in,
+                   instr_pre,
                    mem_stall,
-                   err 
+                   err,
+                   predict,
+                   pc_pred,
+                   pc_raw 
                   );
          
          $fdisplay(sim_log_file, "SIMLOG:: EXE_WR: %b MEM_WR: %b EXE_RD: %3d MEM_RD: %3d WB_WR: %3d Rs: %3d Rt: %3d HAZ: %d E2E: %2b M2E: %2b data_e2e: %8x",
@@ -139,6 +143,14 @@ module proc_hier_pbench();
                    Dcache_state,
                    Dcache_dataOut,
                   );
+
+         $fdisplay(sim_log_file, "SIMLOG:: InsCache RD: %b WR: %b ADDR: %8x STATE: %d DATAOUT: %8x",
+                   Icache_rd,
+                   Icache_wr,
+                   Icache_addr,
+                   Icache_state,
+                   Icache_dataOut
+                  );         
          $fdisplay(sim_log_file, "---------End-------------");
 
          if (RegWrite) begin
@@ -216,7 +228,7 @@ module proc_hier_pbench();
 
    
    // new added 05/03
-   assign ICacheReq = Dut.p0.fetch0.instr_file.Done;
+   assign ICacheReq = DUT.p0.fetch0.instr_file.Done;
    // Signal indicating a valid instruction read request to cache
    // Above assignment is a dummy example
    
@@ -265,6 +277,16 @@ module proc_hier_pbench();
    assign Dcache_state = DUT.p0.memory0.memory_file.cc.state;
    assign Dcache_dataOut = DUT.p0.memory0.memory_file.DataOut;
    assign err = DUT.p0.memory0.memory_file.err;
+   assign predict = DUT.p0.fetch0.predict_taken;
+   assign pc_pred = DUT.p0.fetch0.pc_pred;
+   assign pc_raw = DUT.p0.fetch0.PC_raw;
+
+   assign Icache_rd = DUT.p0.fetch0.instr_file.cc.Rd;
+   assign Icache_wr  = DUT.p0.fetch0.instr_file.cc.wr;
+   assign Icache_addr = DUT.p0.fetch0.instr_file.Addr;
+   assign Icache_state = DUT.p0.fetch0.instr_file.cc.state;
+   assign Icache_dataOut = DUT.p0.fetch0.instr_file.DataOut;
+   assign instr_pre = DUT.p0.fetch0.instr_pre;
 endmodule
 
 // DUMMY LINE FOR REV CONTROL :0:

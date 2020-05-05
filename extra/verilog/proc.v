@@ -84,18 +84,18 @@ module proc (/*AUTOARG*/
    wire [15:0] data_m2e, data_e2e, data_m2m;
    //assign haz_stall = 1'b0; //TODO
    wire m2m_sel, m2m_sel_dff, Memwrite;
-   wire mem_stall, instr_stall, data_stall, branch_decode;
+   wire mem_stall, instr_stall, data_stall, branch_decode, jump_read;
    assign mem_stall = instr_stall;
    assign err = err_m;
 
-   fetch fetch0(.pc(pc), .pc_next(pc_next), .clk(clk), .rst(rst), .instr(instr), .branch_taken(branch_taken), .instr_stall(instr_stall),
+   fetch fetch0(.pc(pc), .pc_next(pc_next), .clk(clk), .rst(rst), .instr(instr), .branch_taken(branch_taken), .instr_stall(instr_stall), .jump_decode(jump), .jump_read(jump_read),
                 .branch_decode(branch_decode), .halt(conditions_de[10]), .pc_2(pc_2_fd), .pc_change(pc_change), .haz_stall(haz_stall), .mem_stall(data_stall), .err(err_f));
    decode decode0(.clk(clk), .rst(rst), .instr(instr), .PC(pc), .newPC(pc_next), .pc_change(pc_change), .Reg_d_sel(Reg_d_sel_wd),
                 .ReadData_t_next(ReadData_t_de), .ReadData_s_next(ReadData_s), .conditions_next(conditions_de), .Reg_write_wd(Reg_write_wd),
                 .WriteData_d(WriteData_d), .immed_next(imme_de), .pc_2_next(pc_2_de), .pc_2_pre(pc_2_fd), .jump(jump), .regRead(regRead), 
                 .R_type(R_type), .haz_stall(haz_stall), .exceptions(exceptions), .Rs(Rs), .Reg2Sel(Reg2Sel), .branch_taken(branch_taken),
                 .data_m2e(data_m2e), .data_e2e(data_e2e), .e2e_sel(e2e_sel), .m2e_sel(m2e_sel), .Memwrite(Memwrite), .m2m_sel(m2m_sel), 
-                .m2m_sel_dff(m2m_sel_dff), .mem_stall(data_stall), .instr_stall(instr_stall), .err_fd(err_f), .branch_decode(branch_decode));
+                .m2m_sel_dff(m2m_sel_dff), .mem_stall(data_stall), .instr_stall(instr_stall), .err_fd(err_f), .branch_decode(branch_decode), .jump_read(jump_read));
    execute execute0(.conditions(conditions_de), .clk(clk), .rst(rst), .pass_next(pass_em), .ReadData_s(ReadData_s), .ReadData_t(ReadData_t_de), 
                     .ReadData_t_em(ReadData_t_em), .imme(imme_de), .addr_em(result), .imme_next(imme_em), .pc_2(pc_2_de), .pc_2_next(pc_2_em), .data_e2e(data_e2e),
                     .m2m_sel_dff(m2m_sel_dff), .data_m2m(data_m2m), .mem_stall(data_stall), .err(err_e), .err_de(conditions_de[7]));

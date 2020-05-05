@@ -119,15 +119,15 @@ module mem_system(/*AUTOARG*/
    wire [15:0] Addr_ff, DataIn_ff, Addr_in, DataIn_in;
    wire Rd_ff, Wr_ff, Rd_in, Wr_in;
    wire comp_stage;
-   single_reg jr(.writeData(Addr), .rst(rst), .clk(clk), .readData(Addr_ff), .writeEn(Done));
-   single_reg jk(.writeData(DataIn), .rst(rst), .clk(clk), .readData(DataIn_ff), .writeEn(Done));
-   single_reg #(1) jj(.writeData(Rd), .rst(rst), .clk(clk), .readData(Rd_ff), .writeEn(Done));
-   single_reg #(1) rr(.writeData(Wr), .rst(rst), .clk(clk), .readData(Wr_ff), .writeEn(Done));
+   //single_reg jr(.writeData(Addr), .rst(rst), .clk(clk), .readData(Addr_ff), .writeEn(Done));
+   //single_reg jk(.writeData(DataIn), .rst(rst), .clk(clk), .readData(DataIn_ff), .writeEn(Done));
+   //single_reg #(1) jj(.writeData(Rd), .rst(rst), .clk(clk), .readData(Rd_ff), .writeEn(Done));
+   //single_reg #(1) rr(.writeData(Wr), .rst(rst), .clk(clk), .readData(Wr_ff), .writeEn(Done));
 
-   assign Addr_in = comp_stage? Addr : Addr_ff;
-   assign DataIn_in = comp_stage ? DataIn : DataIn_ff;
-   assign Rd_in = comp_stage? Rd : Rd_ff;
-   assign Wr_in = comp_stage? Wr : Wr_ff; 
+   //assign Addr_in = comp_stage? Addr : Addr_ff;
+   //assign DataIn_in = comp_stage ? DataIn : DataIn_ff;
+   //assign Rd_in = comp_stage? Rd : Rd_ff;
+   //assign Wr_in = comp_stage? Wr : Wr_ff; 
    
 cache_ctrl cc(.clk(clk), .rst(rst), .Rd(Rd), .wr(Wr), .hit(hit), .valid1(valid1), .valid0(valid0), .comp_stage(comp_stage),
     .dirty(dirty), .valid(valid), .stall_in(stall_memOut), .Done(Done), .req_addr(Addr[2:1]), .select(select),

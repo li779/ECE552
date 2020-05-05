@@ -5,7 +5,7 @@
    Description     : This is the module for decoding instruction.
 */
 module decode_instr (instr, rst, Alu_ops, Result_sel, MemOp_sel, BTR_sel, SLBI_sel, Imme_sel, 
-                     Shft_sel, Alu_sel, Rs, Rt, Rd, jump, branch, exceptions, Memwrite,
+                     Shft_sel, Alu_sel, Rs, Rt, Rd, jump, branch, exceptions, Memwrite, jump_read,
                      regRead, Reg_write, wb_sel, St_sel, Ld_sel, halt, branch_cond, R_type, haz_stall, instr_stall);
 
     //output J_type, I1_type, I2_type, R_type; // J: jump; I1: imme alu; I2: pc, R: 3_reg
@@ -13,7 +13,7 @@ module decode_instr (instr, rst, Alu_ops, Result_sel, MemOp_sel, BTR_sel, SLBI_s
     output [2:0] Rs, Rt, Rd;
     output [1:0] Alu_ops, wb_sel, branch_cond;
     output Result_sel; // 0: from alu, 1: from flag bit
-    output MemOp_sel, BTR_sel, SLBI_sel, Imme_sel, Shft_sel, Alu_sel, jump, 
+    output MemOp_sel, BTR_sel, SLBI_sel, Imme_sel, Shft_sel, Alu_sel, jump, jump_read,
             branch, regRead, Reg_write, St_sel, Ld_sel, halt, R_type, exceptions, Memwrite;
     input [15:0] instr;
     input rst;
@@ -53,6 +53,7 @@ module decode_instr (instr, rst, Alu_ops, Result_sel, MemOp_sel, BTR_sel, SLBI_s
     assign jump = (instr[15:13] == 3'b001);
     assign branch = (instr[15:13] == 3'b011);
     assign regRead = instr[11];
+    assign jump_read = regRead;
     assign branch_cond = instr[12:11];
 
     // regwrite
