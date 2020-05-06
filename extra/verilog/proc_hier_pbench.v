@@ -236,7 +236,7 @@ module proc_hier_pbench();
    // Signal indicating a valid instruction cache hit
    // Above assignment is a dummy example
 
-   assign DCacheReq = DUT.p0.memory0.memRead;
+   assign DCacheReq = DUT.p0.memory0.memRead|DUT.p0.memory0.memWrite;
    // Signal indicating a valid instruction data read or write request to cache
    // Above assignment is a dummy example
    //    
@@ -277,8 +277,8 @@ module proc_hier_pbench();
    assign Dcache_state = DUT.p0.memory0.memory_file.cc.state;
    assign Dcache_dataOut = DUT.p0.memory0.memory_file.DataOut;
    assign err = DUT.p0.memory0.memory_file.err;
-   assign predict = DUT.p0.fetch0.predict_taken;
-   assign pc_pred = DUT.p0.fetch0.pc_pred;
+   //assign predict = DUT.p0.fetch0.predict_taken;
+   //assign pc_pred = DUT.p0.fetch0.pc_pred;
    assign pc_raw = DUT.p0.fetch0.PC_raw;
 
    assign Icache_rd = DUT.p0.fetch0.instr_file.cc.Rd;

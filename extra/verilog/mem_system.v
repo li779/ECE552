@@ -133,7 +133,7 @@ cache_ctrl cc(.clk(clk), .rst(rst), .Rd(Rd), .wr(Wr), .hit(hit), .valid1(valid1)
     .dirty(dirty), .valid(valid), .stall_in(stall_memOut), .Done(Done), .req_addr(Addr[2:1]), .select(select),
     .stall_out(Stall), .CacheHit(CacheHit), .mem_wr(mem_wr), .mem_rd(mem_rd), .hit0(hit0), .hit1(hit1),
     .enable0(enable0), .enable1(enable1), .comp(comp), .write(write), .valid_in(valid_in), .select_wb(select_wb), 
-    .select_rd(select_rd), .offset_cache(offset_cache), .offset_mem(offset_mem));
+    .select_rd(select_rd), .offset_cache(offset_cache), .offset_mem(offset_mem), .index(Addr[10:3]));
    
    
 endmodule // mem_system

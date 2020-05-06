@@ -1,6 +1,7 @@
-module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out, CacheHit, mem_wr, mem_rd, enable0, enable1, comp, write, valid_in, select_wb, select_rd, offset_cache, offset_mem, req_addr, valid0, valid1, hit0, hit1, select, comp_stage);
+module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out, CacheHit, mem_wr, mem_rd, enable0, enable1, comp, write, valid_in, select_wb, select_rd, offset_cache, offset_mem, req_addr, valid0, valid1, hit0, hit1, select, comp_stage, index);
     input clk, rst, Rd, wr, hit, dirty, valid, stall_in, valid0, valid1, hit0, hit1;
     input [1:0] req_addr;
+    input [7:0] index;
     output reg Done, stall_out, CacheHit, mem_wr, mem_rd, enable0, enable1, comp, write, valid_in, select_wb, select_rd, select;
     output [1:0] offset_cache, offset_mem;
     output comp_stage;
@@ -28,6 +29,7 @@ module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out
     wire select_in;
     wire hit_cond;
     wire victimway, victim_set;
+    wire refbit;
 
     dff cache_reg [1:0] (.d(Cache_offset), .q(offset_cache), .clk(clk), .rst(rst));
     dff mem_reg [1:0] (.d(Mem_offset), .q(offset_mem), .clk(clk), .rst(rst));
@@ -38,7 +40,7 @@ module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out
     assign go =  Rd | wr;
     assign pre_select = ({valid1,valid0} == 2'b00) ? 0 :
                         ({valid1,valid0} == 2'b01) ? 1 :
-                        ({valid1,valid0} == 2'b10) ? 0 : ~victimway;
+                        ({valid1,valid0} == 2'b10) ? 0 : ~refbit;
     assign select_in = (state == 3'b000) ? pre_select : select_vict;
     dff victim_ff(.d(select_in), .q(select_vict), .clk(clk), .rst(rst));
     assign hit_cond = (valid0&hit0)|(valid1&hit1);
@@ -48,6 +50,9 @@ module cache_ctrl(clk, rst, Rd, wr, hit, dirty, valid, stall_in, Done, stall_out
     assign victim_set = (state == COMP)&go ? (victimway ^ 1) : victimway;
 
     assign comp_stage = (state == COMP);
+
+    
+    memc #( 1) reference (refbit,index, select_in, comp_stage, clk, rst, 1'b0, 5'b0);
 
     // wire miss;
     // reg miss_set; 
